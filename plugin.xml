@@ -52,4 +52,10 @@
 
         </config-file>
     </platform>
+    <platform name="ios">
+        <preference name="SwiftVersion" value="5.0"/>
+        <source-file src="src/ios/SpeedTest.swift"/>
+        <header-file src="src/ios/Bridging-Header.h" />
+        <framework src="CoreLocation.framework"/>
+    </platform>
 </plugin>
