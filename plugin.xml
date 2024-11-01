@@ -53,9 +53,25 @@
         </config-file>
     </platform>
     <platform name="ios">
-        <preference name="SwiftVersion" value="5.0"/>
+        <source-file src="src/frameworks/SpeedtestSDK.xcframework" target-dir="lib" framework="true" />
+        <framework src="libc++.tbd" />
+        <framework src="libz.tbd" />
+        <config-file target="config.xml" parent="/*">
+            <feature name="SpeedTest">
+                <param name="ios-package" value="SpeedTest" />
+            </feature>
+        </config-file>
         <source-file src="src/ios/SpeedTest.swift"/>
-        <header-file src="src/ios/Bridging-Header.h" />
-        <framework src="CoreLocation.framework"/>
+        <source-file src="src/ios/CustomTestHandler.swift"/>
+        <source-file src="src/ios/EndpontHandler.swift"/>
+        <config-file target="*-Info.plist" parent="NSAppTransportSecurity">
+            <dict>
+                <key>NSAllowsArbitraryLoads</key>
+                <true/>
+            </dict>
+        </config-file>
+        <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
+            <string>Access Location Service</string>
+        </config-file>
     </platform>
 </plugin>

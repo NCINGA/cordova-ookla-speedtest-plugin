@@ -38,6 +38,7 @@ class CustomTestHandler(
         val config = Config.newConfig(configName)
         val configHandler = object : ConfigHandlerBase() {
             override fun onConfigFetchFinished(validatedConfig: ValidatedConfig?) {
+
                 val handler = object : TestHandlerBase() {
                     override fun onLatencyFinished(
                         taskController: TaskManagerController?,

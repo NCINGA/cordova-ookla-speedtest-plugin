@@ -1,0 +1,2119 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.8.1 (swiftlang-5.8.0.124.5 clang-1403.0.22.11.100)
+// swift-module-flags: -target arm64-apple-ios12.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -Osize -module-name SpeedtestSDK
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import AdSupport
+import SystemConfiguration.CaptiveNetwork
+import CoreLocation
+import CoreTelephony
+import Dispatch
+import Foundation
+import NetworkExtension
+import Security
+@_exported import SpeedtestSDK
+import Swift
+import SystemConfiguration
+import UIKit
+import _Concurrency
+import _StringProcessing
+public struct AnyCodable {
+  public let value: Any
+  public init<T>(_ value: T?)
+}
+extension SpeedtestSDK.AnyCodable : Swift.Codable {
+  public init(from decoder: any Swift.Decoder) throws
+  public func encode(to encoder: any Swift.Encoder) throws
+}
+extension SpeedtestSDK.AnyCodable : Swift.Equatable {
+  public static func == (lhs: SpeedtestSDK.AnyCodable, rhs: SpeedtestSDK.AnyCodable) -> Swift.Bool
+}
+extension SpeedtestSDK.AnyCodable : Swift.CustomStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+}
+extension SpeedtestSDK.AnyCodable : Swift.CustomDebugStringConvertible {
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+extension SpeedtestSDK.AnyCodable : Swift.ExpressibleByNilLiteral, Swift.ExpressibleByBooleanLiteral, Swift.ExpressibleByIntegerLiteral, Swift.ExpressibleByFloatLiteral, Swift.ExpressibleByStringLiteral, Swift.ExpressibleByArrayLiteral, Swift.ExpressibleByDictionaryLiteral {
+  public init(nilLiteral: ())
+  public init(booleanLiteral value: Swift.Bool)
+  public init(integerLiteral value: Swift.Int)
+  public init(floatLiteral value: Swift.Double)
+  public init(extendedGraphemeClusterLiteral value: Swift.String)
+  public init(stringLiteral value: Swift.String)
+  public init(arrayLiteral elements: Any...)
+  public init(dictionaryLiteral elements: (Swift.AnyHashable, Any)...)
+  public typealias ArrayLiteralElement = Any
+  public typealias BooleanLiteralType = Swift.Bool
+  public typealias ExtendedGraphemeClusterLiteralType = Swift.String
+  public typealias FloatLiteralType = Swift.Double
+  public typealias IntegerLiteralType = Swift.Int
+  public typealias Key = Swift.AnyHashable
+  public typealias StringLiteralType = Swift.String
+  public typealias UnicodeScalarLiteralType = Swift.String
+  public typealias Value = Any
+}
+extension Swift.KeyedDecodingContainer {
+  public func decode<T>(_ key: Swift.KeyedDecodingContainer<K>.Key) throws -> T where T : Swift.Decodable
+  public func decodeIfPresent<T>(_ key: Swift.KeyedDecodingContainer<K>.Key) throws -> T? where T : Swift.Decodable
+  public func decodeAny<T>(_ key: K) throws -> T
+  public func decodeAnyIfPresent<T>(_ key: K) throws -> T?
+  public func decodeArray<T>(_ key: K, invalidElementStrategy: SpeedtestSDK.InvalidElementStrategy<T>? = nil) throws -> [T] where T : Swift.Decodable
+  public func decodeArrayIfPresent<T>(_ key: K, invalidElementStrategy: SpeedtestSDK.InvalidElementStrategy<T>? = nil) throws -> [T]? where T : Swift.Decodable
+  public func decodeDictionary<T>(_ key: K, invalidElementStrategy: SpeedtestSDK.InvalidElementStrategy<T>? = nil) throws -> [Swift.String : T] where T : Swift.Decodable
+  public func decodeDictionaryIfPresent<T>(_ key: K, invalidElementStrategy: SpeedtestSDK.InvalidElementStrategy<T>? = nil) throws -> [Swift.String : T]? where T : Swift.Decodable
+}
+public enum InvalidElementStrategy<T> : Swift.CustomStringConvertible {
+  case remove
+  case fail
+  case fallback(T)
+  case custom((Swift.DecodingError) -> SpeedtestSDK.InvalidElementStrategy<T>)
+  public var description: Swift.String {
+    get
+  }
+}
+extension Swift.KeyedDecodingContainer {
+  public func decodeArray<T>(_ type: [T].Type, forKey key: K, invalidElementStrategy: SpeedtestSDK.InvalidElementStrategy<T>? = nil) throws -> [T] where T : Swift.Decodable
+  public func decodeArrayIfPresent<T>(_ type: [T].Type, forKey key: K, invalidElementStrategy: SpeedtestSDK.InvalidElementStrategy<T>? = nil) throws -> [T]? where T : Swift.Decodable
+  public func decodeDictionary<T>(_ type: [Swift.String : T].Type, forKey key: K, invalidElementStrategy: SpeedtestSDK.InvalidElementStrategy<T>? = nil) throws -> [Swift.String : T] where T : Swift.Decodable
+  public func decodeDictionaryIfPresent<T>(_ type: [Swift.String : T].Type, forKey key: K, invalidElementStrategy: SpeedtestSDK.InvalidElementStrategy<T>? = nil) throws -> [Swift.String : T]? where T : Swift.Decodable
+}
+extension Swift.KeyedDecodingContainer {
+  public func decodeAny<T>(_ type: T.Type, forKey key: K) throws -> T
+  public func decodeAnyIfPresent<T>(_ type: T.Type, forKey key: K) throws -> T?
+  public func toDictionary() throws -> [Swift.String : Any]
+}
+extension Swift.KeyedEncodingContainer {
+  public mutating func encodeAnyIfPresent<T>(_ value: T?, forKey key: K) throws
+  public mutating func encodeAny<T>(_ value: T, forKey key: K) throws
+}
+public struct RawCodingKey : Swift.CodingKey {
+  public var stringValue: Swift.String {
+    get
+  }
+  public init(string: Swift.String)
+  public init?(stringValue: Swift.String)
+  public var intValue: Swift.Int? {
+    get
+  }
+  public init?(intValue: Swift.Int)
+}
+extension SpeedtestSDK.RawCodingKey : Swift.ExpressibleByStringLiteral, Swift.ExpressibleByIntegerLiteral {
+  public init(stringLiteral value: Swift.String)
+  public init(integerLiteral value: Swift.Int)
+  public typealias ExtendedGraphemeClusterLiteralType = Swift.String
+  public typealias IntegerLiteralType = Swift.Int
+  public typealias StringLiteralType = Swift.String
+  public typealias UnicodeScalarLiteralType = Swift.String
+}
+open class KeychainSwift {
+  open var lastResultCode: Darwin.OSStatus
+  open var accessGroup: Swift.String?
+  open var synchronizable: Swift.Bool
+  public init()
+  public init(keyPrefix: Swift.String)
+  @discardableResult
+  open func set(_ value: Swift.String, forKey key: Swift.String, withAccess access: SpeedtestSDK.KeychainSwiftAccessOptions? = nil) -> Swift.Bool
+  @discardableResult
+  open func set(_ value: Foundation.Data, forKey key: Swift.String, withAccess access: SpeedtestSDK.KeychainSwiftAccessOptions? = nil) -> Swift.Bool
+  @discardableResult
+  open func set(_ value: Swift.Bool, forKey key: Swift.String, withAccess access: SpeedtestSDK.KeychainSwiftAccessOptions? = nil) -> Swift.Bool
+  open func get(_ key: Swift.String) -> Swift.String?
+  open func getData(_ key: Swift.String, asReference: Swift.Bool = false) -> Foundation.Data?
+  open func getBool(_ key: Swift.String) -> Swift.Bool?
+  @discardableResult
+  open func delete(_ key: Swift.String) -> Swift.Bool
+  public var allKeys: [Swift.String] {
+    get
+  }
+  @discardableResult
+  open func clear() -> Swift.Bool
+  @objc deinit
+}
+public struct KeychainSwiftConstants {
+  public static var accessGroup: Swift.String {
+    get
+  }
+  public static var accessible: Swift.String {
+    get
+  }
+  public static var attrAccount: Swift.String {
+    get
+  }
+  public static var attrSynchronizable: Swift.String {
+    get
+  }
+  public static var klass: Swift.String {
+    get
+  }
+  public static var matchLimit: Swift.String {
+    get
+  }
+  public static var returnData: Swift.String {
+    get
+  }
+  public static var valueData: Swift.String {
+    get
+  }
+  public static var returnReference: Swift.String {
+    get
+  }
+  public static var returnAttributes: Swift.String {
+    get
+  }
+  public static var secMatchLimitAll: Swift.String {
+    get
+  }
+}
+public enum KeychainSwiftAccessOptions {
+  case accessibleWhenUnlocked
+  case accessibleWhenUnlockedThisDeviceOnly
+  case accessibleAfterFirstUnlock
+  case accessibleAfterFirstUnlockThisDeviceOnly
+  case accessibleWhenPasscodeSetThisDeviceOnly
+  public static func == (a: SpeedtestSDK.KeychainSwiftAccessOptions, b: SpeedtestSDK.KeychainSwiftAccessOptions) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRAppData) public class AppData : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var version: Swift.String {
+      get
+    }
+    @objc public var packageName: Swift.String {
+      get
+    }
+    @objc public var apiKey: Swift.String {
+      get
+    }
+    @objc public var identifier: Swift.String? {
+      get
+    }
+    @objc public var sdk: SpeedtestSDK.STResult.SDKInfo {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.AppData
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @_inheritsConvenienceInitializers @objc(STVAssetUrl) public class AssetUrl : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var name: Swift.String {
+      get
+    }
+    @objc public var displayName: Swift.String {
+      get
+    }
+    @objc public var url: Swift.String {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STVideoResult.AssetUrl
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRBandwidthMeasureMethod) public enum BandwidthMeasureMethod : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case server, client
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STResult.BandwidthMeasureMethod.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STResult.BandwidthMeasureMethod.RawValue)
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRCarrierInfo) public class CarrierInfo : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var name: Swift.String {
+      get
+    }
+    @objc public var detailedConnectionType: SpeedtestSDK.STResult.DetailedConnectionType {
+      get
+    }
+    @objc public var mobileCountryCode: Swift.String {
+      get
+    }
+    @objc public var mobileNetworkCode: Swift.String {
+      get
+    }
+    @objc public var isoCountryCode: Swift.String {
+      get
+    }
+    public var allowsVOIP: Swift.Bool? {
+      get
+    }
+    @objc(allowsVOIP) public var _objc_allowsVOIP: Swift.Bool {
+      @objc get
+    }
+    @objc public var isDataServiceProvider: Swift.Bool {
+      get
+    }
+    @objc public var resolvedFromIpAddress: Swift.Bool {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.CarrierInfo
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRConfig) public class Config : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var name: Swift.String {
+      get
+    }
+    @objc public var type: Swift.String {
+      get
+    }
+    @objc public var serverNetwork: SpeedtestSDK.STResult.ServerNetwork {
+      get
+    }
+    @objc public var tag: Swift.String? {
+      get
+    }
+    @objc public var testMethod: SpeedtestSDK.STResult.TestMethod {
+      get
+    }
+    @objc public var externalIp: Swift.String {
+      get
+    }
+    @objc public var retrievedAt: Foundation.Date? {
+      get
+    }
+    @objc public var isp: Swift.String {
+      get
+    }
+    @objc public var error: SpeedtestSDK.STResult.OoklaError? {
+      get
+    }
+    @objc public var download: SpeedtestSDK.STResult.ConfigTransfer {
+      get
+    }
+    @objc public var upload: SpeedtestSDK.STResult.ConfigTransfer {
+      get
+    }
+    @objc public var stop: SpeedtestSDK.STResult.ConfigStop {
+      get
+    }
+    @objc public var server: SpeedtestSDK.STResult.Server {
+      get
+    }
+    @objc public var connections: SpeedtestSDK.STResult.Connections {
+      get
+    }
+    @objc public var initiation: Swift.String? {
+      get
+    }
+    @objc public var trigger: Swift.String? {
+      get
+    }
+    @objc public var providerDisplayName: Swift.String? {
+      get
+    }
+    @objc public var providerDisplaySource: SpeedtestSDK.ProviderDisplaySource {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.Config
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRConfigScaling) public class ConfigScaling : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var enabled: Swift.Bool {
+      get
+    }
+    @objc public var estimatedWindowSize: Swift.Int64 {
+      get
+    }
+    @objc public var maxConnections: Swift.Int8 {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.ConfigScaling
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRConfigStop) public class ConfigStop : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var femaPeriod: Swift.Int32 {
+      get
+    }
+    @objc public var semaPeriod: Swift.Int32 {
+      get
+    }
+    @objc public var stopCount: Swift.Int32 {
+      get
+    }
+    @objc public var stopDelta: Swift.Int32 {
+      get
+    }
+    @objc public var stopEnabled: Swift.Bool {
+      get
+    }
+    @objc public var reportEnabled: Swift.Bool {
+      get
+    }
+    @objc public var loggingEnabled: Swift.Bool {
+      get
+    }
+    @objc public var useAverageForStopCalculation: Swift.Bool {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.ConfigStop
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRConfigTransfer) public class ConfigTransfer : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var scaling: SpeedtestSDK.STResult.ConfigScaling {
+      get
+    }
+    @objc public var startConns: Swift.Int8 {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.ConfigTransfer
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRConnectionSelectionMethod) public enum ConnectionSelectionMethod : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case `default`, user
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STResult.ConnectionSelectionMethod.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STResult.ConnectionSelectionMethod.RawValue)
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRConnectionThreadingType) public enum ConnectionThreadingType : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case multi, single
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STResult.ConnectionThreadingType.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STResult.ConnectionThreadingType.RawValue)
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRConnectionType) public enum ConnectionType : Swift.Int, Swift.Codable {
+    case unknown = 0, cellular = 1, wifi = 2, ethernet = 3, bluetooth = 4
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRConnections) public class Connections : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var mode: SpeedtestSDK.STResult.ConnectionThreadingType {
+      get
+    }
+    @objc public var selectionMethod: SpeedtestSDK.STResult.ConnectionSelectionMethod {
+      get
+    }
+    @objc public var isVpn: Swift.Bool {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.Connections
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRConnectivity) public class Connectivity : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var isVpn: Swift.Bool {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.Connectivity
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRCoordinateSource) public enum CoordinateSource : Swift.Int, Swift.Codable {
+    case unknown = 0, gps = 1, geoIp = 2
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRDetailedConnectionType) public enum DetailedConnectionType : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case unknown, wifi, ethernet, bluetooth, unknownCellular, gprs, edge, wcdma, hsdpa, hsupa, cdma1x, cdmaEvdoRev0, cdmaEvdoRevA, cdmaEvdoRevB, ehrpd, lte, nrnsa, nr
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STResult.DetailedConnectionType.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STResult.DetailedConnectionType.RawValue)
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRDeviceData) public class DeviceData : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var id: Swift.String {
+      get
+    }
+    @objc public var version: Swift.String {
+      get
+    }
+    @objc public var model: Swift.String {
+      get
+    }
+    @objc public var platform: Swift.String {
+      get
+    }
+    @objc public var platformDetailed: Swift.String? {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.DeviceData
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRDeviceQueryResult) public class DeviceQueryResult : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var start: SpeedtestSDK.STResult.StartEnd {
+      get
+    }
+    @objc public var end: SpeedtestSDK.STResult.StartEnd {
+      get
+    }
+    @objc public var device: SpeedtestSDK.STResult.DeviceData {
+      get
+    }
+    @objc public var user: SpeedtestSDK.STResult.UserData {
+      get
+    }
+    public var events: SpeedtestSDK.AnyCodable? {
+      get
+    }
+    @objc(events) public var _objc_events: Any? {
+      @objc get
+    }
+    @objc public var app: SpeedtestSDK.STResult.AppData {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.DeviceQueryResult
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRErrorType) public enum ErrorType : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case unknown, latencyFailed, latencyTcpFailed, latencyHttpFailed, downloadFailed, uploadFailed, packetLossFailed, tracerouteFailed, tracerouteCanceled, tracerouteMissingHost, tracerouteHopError, tracerouteHopTimeout, tracerouteHopMTUExceeded, tracerouteHopHostUnreachable, tracerouteHopNetworkUnreachable, tracerouteHopPortUnreachable, tracerouteHopUnreachable, metadataFailed, serverInvalidState, serverProtocolError, serverDownloadFailed, notEnoughServers, addressLookupFailed, invalidConfig, connectionFailed, bindToInterfaceFailed, invalidAddress, invalidSocket, socketReadFailed, socketWriteFailed, protocolError, implementationMissing, systemError, getAddrInfoError, windowsSocketsError, cocoaError, sdkNotInitialized, guidNotFound, appNotFound, missingMandatoryField, supplementalDataExceedsMaxLength, backgroundScanFailed, resultFetchInvalidResponse, resultFetchProtocolError, resultFetchRequestFailed, resultFetchUnexpectedResult, resultFetchInternalError, resultFetchRequestError, resultFetchResultNotFound, resultFetchInvalidApiKey, configInvalidCredentials, configInvalidParam, configPermissionDenied, configUnknownError, configInternalError, configNotFound, configOtherError, configServerSelectionFailed, cocoaErrorAppTransportSecurityRequiresSecureConnection, cocoaErrorBackgroundSessionInUseByAnotherProcess, cocoaErrorBackgroundSessionRequiresSharedContainer, cocoaErrorBackgroundSessionWasDisconnected, cocoaErrorBadServerResponse, cocoaErrorBadURL, cocoaErrorCallIsActive, cocoaErrorCancelled, cocoaErrorCannotCloseFile, cocoaErrorCannotConnectToHost, cocoaErrorCannotCreateFile, cocoaErrorCannotDecodeContentData, cocoaErrorCannotDecodeRawData, cocoaErrorCannotFindHost, cocoaErrorCannotLoadFromNetwork, cocoaErrorCannotMoveFile, cocoaErrorCannotOpenFile, cocoaErrorCannotParseResponse, cocoaErrorCannotRemoveFile, cocoaErrorCannotWriteToFile, cocoaErrorClientCertificateRejected, cocoaErrorClientCertificateRequired, cocoaErrorDataLengthExceedsMaximum, cocoaErrorDataNotAllowed, cocoaErrorDNSLookupFailed, cocoaErrorDownloadDecodingFailedMidStream, cocoaErrorDownloadDecodingFailedToComplete, cocoaErrorFileDoesNotExist, cocoaErrorFileIsDirectory, cocoaErrorFileOutsideSafeArea, cocoaErrorHTTPTooManyRedirects, cocoaErrorInternationalRoamingOff, cocoaErrorNetworkConnectionLost, cocoaErrorNoPermissionsToReadFile, cocoaErrorNotConnectedToInternet, cocoaErrorRedirectToNonExistentLocation, cocoaErrorRequestBodyStreamExhausted, cocoaErrorResourceUnavailable, cocoaErrorSecureConnectionFailed, cocoaErrorServerCertificateHasBadDate, cocoaErrorServerCertificateHasUnknownRoot, cocoaErrorServerCertificateNotYetValid, cocoaErrorServerCertificateUntrusted, cocoaErrorTimedOut, cocoaErrorUnknown, cocoaErrorUnsupportedURL, cocoaErrorUserAuthenticationRequired, cocoaErrorUserCancelledAuthentication, cocoaErrorZeroByteResource, internalError, internalJsonError, internalMissingDataError, internalCharsetDecodeError, internalUnmarshallingError, androidRuntimeException, nsCocoaError, httpClient, httpConnectFailed, httpRequestFailed, httpResponseFailed, httpCallFailed, none
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STResult.ErrorType.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STResult.ErrorType.RawValue)
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRHttpGet) public class HttpGet : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var timestamp: Foundation.Date {
+      get
+    }
+    @objc public var bytes: SpeedtestSDK.STResult.HttpGetBytes? {
+      get
+    }
+    @objc public var durationMs: SpeedtestSDK.STResult.HttpGetDuration? {
+      get
+    }
+    @objc public var error: SpeedtestSDK.STResult.OoklaError? {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.HttpGet
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRHttpGetBytes) public class HttpGetBytes : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var headers: Swift.Int64 {
+      get
+    }
+    @objc public var body: Swift.Int64 {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.HttpGetBytes
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRHttpGetDuration) public class HttpGetDuration : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var total: Swift.Int64 {
+      get
+    }
+    public var dnsResolution: Swift.Int64? {
+      get
+    }
+    @objc(dnsResolution) public var _objc_dnsResolution: Foundation.NSNumber? {
+      @objc get
+    }
+    public var proxySelect: Swift.Int64? {
+      get
+    }
+    @objc(proxySelect) public var _objc_proxySelect: Foundation.NSNumber? {
+      @objc get
+    }
+    public var socketConnect: Swift.Int64? {
+      get
+    }
+    @objc(socketConnect) public var _objc_socketConnect: Foundation.NSNumber? {
+      @objc get
+    }
+    public var secureSocketConnect: Swift.Int64? {
+      get
+    }
+    @objc(secureSocketConnect) public var _objc_secureSocketConnect: Foundation.NSNumber? {
+      @objc get
+    }
+    public var requestHeader: Swift.Int64? {
+      get
+    }
+    @objc(requestHeader) public var _objc_requestHeader: Foundation.NSNumber? {
+      @objc get
+    }
+    public var responseHeader: Swift.Int64? {
+      get
+    }
+    @objc(responseHeader) public var _objc_responseHeader: Foundation.NSNumber? {
+      @objc get
+    }
+    public var responseBody: Swift.Int64? {
+      get
+    }
+    @objc(responseBody) public var _objc_responseBody: Foundation.NSNumber? {
+      @objc get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.HttpGetDuration
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRInterfaceInfo) public class InterfaceInfo : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var name: Swift.String {
+      get
+    }
+    @objc public var ip: Swift.String {
+      get
+    }
+    @objc public var macaddr: Swift.String {
+      get
+    }
+    @objc public var isVpn: Swift.Bool {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.InterfaceInfo
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRLatency) public class Latency : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var timestamp: Foundation.Date {
+      get
+    }
+    @objc public var durationMicros: Swift.Int64 {
+      get
+    }
+    @objc public var timeMillis: Swift.Double {
+      get
+    }
+    @objc public var jitterMillis: Swift.Double {
+      get
+    }
+    @objc public var pings: [Swift.Double] {
+      get
+    }
+    @objc public var error: SpeedtestSDK.STResult.OoklaError? {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.Latency
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRLocation) public class Location : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var timestamp: Foundation.Date {
+      get
+    }
+    public var ageMillis: Swift.Int64? {
+      get
+    }
+    @objc(ageMillis) public var _objc_ageMillis: Foundation.NSNumber? {
+      @objc get
+    }
+    @objc public var altitude: Swift.Double {
+      get
+    }
+    @objc public var verticalAccuracy: Swift.Double {
+      get
+    }
+    @objc public var coordinateSource: SpeedtestSDK.STResult.CoordinateSource {
+      get
+    }
+    @objc public var latitude: Swift.Double {
+      get
+    }
+    @objc public var longitude: Swift.Double {
+      get
+    }
+    @objc public var horizontalAccuracy: Swift.Double {
+      get
+    }
+    public var course: Swift.Double? {
+      get
+    }
+    @objc(course) public var _objc_course: Foundation.NSNumber? {
+      @objc get
+    }
+    public var courseAccuracy: Swift.Double? {
+      get
+    }
+    @objc(courseAccuracy) public var _objc_courseAccuracy: Foundation.NSNumber? {
+      @objc get
+    }
+    @objc public var timezoneId: Swift.String? {
+      get
+    }
+    public var timezoneOffsetSeconds: Swift.Int32? {
+      get
+    }
+    @objc(timezoneOffsetSeconds) public var _objc_timezoneOffsetSeconds: Foundation.NSNumber? {
+      @objc get
+    }
+    public var floor: Swift.Int32? {
+      get
+    }
+    @objc(floor) public var _objc_floor: Foundation.NSNumber? {
+      @objc get
+    }
+    @objc public var status: SpeedtestSDK.STResult.LocationStatus {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.Location
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRLocationStatus) public enum LocationStatus : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case undetermined, unknown, denied, available, error
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STResult.LocationStatus.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STResult.LocationStatus.RawValue)
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRNetwork) public class Network : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var connectionDetailedType: SpeedtestSDK.STResult.DetailedConnectionType {
+      get
+    }
+    @objc public var isoCountryCode: Swift.String {
+      get
+    }
+    @objc public var mobileCountryCode: Swift.String {
+      get
+    }
+    @objc public var mobileNetworkCode: Swift.String {
+      get
+    }
+    @objc public var carrierResolvedFromIpAddress: Swift.Bool {
+      get
+    }
+    @objc public var deviceIpAddress: Swift.String {
+      get
+    }
+    @objc public var externalIpAddress: Swift.String {
+      get
+    }
+    @objc public var wifi: SpeedtestSDK.STResult.Wifi? {
+      get
+    }
+    @objc public var carrier: Swift.String {
+      get
+    }
+    @objc public var connectionType: SpeedtestSDK.STResult.ConnectionType {
+      get
+    }
+    @objc public var interfaceName: Swift.String {
+      get
+    }
+    @objc public var cellularDetailedType: SpeedtestSDK.STResult.DetailedConnectionType {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.Network
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STROoklaError) public class OoklaError : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var code: Swift.Int64 {
+      get
+    }
+    @objc public var type: SpeedtestSDK.STResult.ErrorType {
+      get
+    }
+    @objc public var message: Swift.String {
+      get
+    }
+    @objc public var causes: [SpeedtestSDK.STResult.OoklaError]? {
+      get
+    }
+    public var extraInfo: SpeedtestSDK.AnyCodable? {
+      get
+    }
+    @objc(extraInfo) public var _objc_extraInfo: Any? {
+      @objc get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.OoklaError
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRPacketLoss) public class PacketLoss : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var sent: Swift.Int16 {
+      get
+    }
+    @objc public var received: Swift.Int16 {
+      get
+    }
+    @objc public var maxIdReceived: Swift.Int16 {
+      get
+    }
+    @objc public var duplicatePackets: Swift.Int16 {
+      get
+    }
+    @objc public var lost: Swift.Double {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.PacketLoss
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+@objc(STProviderDisplaySource) public enum ProviderDisplaySource : Swift.Int, Swift.Codable {
+  case config = 0, simProviderIdDatabase = 3, simCarrierIdName = 8, simOperatorName = 9, networkOperatorName = 10, carrierName = 11, unknown = -1
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @_inheritsConvenienceInitializers @objc(STVRendition) public class Rendition : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var name: Swift.String {
+      get
+    }
+    @objc public var commonName: Swift.String {
+      get
+    }
+    @objc public var resolution: SpeedtestSDK.STVideoResult.Resolution {
+      get
+    }
+    @objc public var bitrate: Swift.Int32 {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STVideoResult.Rendition
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @_inheritsConvenienceInitializers @objc(STVResolution) public class Resolution : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var widthPx: Swift.Int32 {
+      get
+    }
+    @objc public var heightPx: Swift.Int32 {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STVideoResult.Resolution
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+@_inheritsConvenienceInitializers @objc(STRResult) public class STResult : ObjectiveC.NSObject, Swift.Codable {
+  @objc public var guid: Swift.String {
+    get
+  }
+  @objc public var app: SpeedtestSDK.STResult.AppData {
+    get
+  }
+  @objc public var device: SpeedtestSDK.STResult.DeviceData {
+    get
+  }
+  @objc public var config: SpeedtestSDK.STResult.Config {
+    get
+  }
+  @objc public var user: SpeedtestSDK.STResult.UserData {
+    get
+  }
+  @objc public var upload: SpeedtestSDK.STResult.Upload? {
+    get
+  }
+  @objc public var download: SpeedtestSDK.STResult.Transfer? {
+    get
+  }
+  @objc public var httpDownload: SpeedtestSDK.STResult.Transfer? {
+    get
+  }
+  @objc public var latency: SpeedtestSDK.STResult.Latency? {
+    get
+  }
+  @objc public var packetLoss: SpeedtestSDK.STResult.PacketLoss? {
+    get
+  }
+  @objc public var httpGet: SpeedtestSDK.STResult.HttpGet? {
+    get
+  }
+  @objc public var serverSelection: SpeedtestSDK.STResult.ServerSelection? {
+    get
+  }
+  @objc public var traceroute: SpeedtestSDK.STResult.Traceroutes? {
+    get
+  }
+  public var supplementalData: SpeedtestSDK.AnyCodable? {
+    get
+  }
+  @objc(supplementalData) public var _objc_supplementalData: Any? {
+    @objc get
+  }
+  @objc public var start: SpeedtestSDK.STResult.StartEnd {
+    get
+  }
+  @objc public var end: SpeedtestSDK.STResult.StartEnd? {
+    get
+  }
+  @objc public var resultUpload: SpeedtestSDK.STResult.ResultUpload? {
+    get
+  }
+  public var events: SpeedtestSDK.AnyCodable? {
+    get
+  }
+  @objc(events) public var _objc_events: Any? {
+    @objc get
+  }
+  @objc public var video: SpeedtestSDK.STVideoResult? {
+    get
+  }
+  @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+  @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult
+  @objc override dynamic public init()
+  @objc deinit
+  public func encode(to encoder: any Swift.Encoder) throws
+  required public init(from decoder: any Swift.Decoder) throws
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRResultBackgroundScan) public class ResultBackgroundScan : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var guid: Swift.String {
+      get
+    }
+    @objc public var schemaRevision: Swift.Int32 {
+      get
+    }
+    @objc public var app: SpeedtestSDK.STResult.AppData {
+      get
+    }
+    public var device: SpeedtestSDK.AnyCodable {
+      get
+    }
+    @objc(device) public var _objc_device: Any {
+      @objc get
+    }
+    public var config: SpeedtestSDK.AnyCodable {
+      get
+    }
+    @objc(config) public var _objc_config: Any {
+      @objc get
+    }
+    public var user: SpeedtestSDK.AnyCodable {
+      get
+    }
+    @objc(user) public var _objc_user: Any {
+      @objc get
+    }
+    public var start: SpeedtestSDK.AnyCodable {
+      get
+    }
+    @objc(start) public var _objc_start: Any {
+      @objc get
+    }
+    public var events: [SpeedtestSDK.AnyCodable] {
+      get
+    }
+    @objc(events) public var _objc_events: [Any] {
+      @objc get
+    }
+    public var supplementalData: SpeedtestSDK.AnyCodable? {
+      get
+    }
+    @objc(supplementalData) public var _objc_supplementalData: Any? {
+      @objc get
+    }
+    @objc public var resultUpload: SpeedtestSDK.STResult.ResultUpload? {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.ResultBackgroundScan
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRResultUpload) public class ResultUpload : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var response: SpeedtestSDK.STResult.ResultUploadResponse? {
+      get
+    }
+    public var errors: [SpeedtestSDK.STResult.ErrorType] {
+      get
+    }
+    @objc(errors) public var _objc_errors: [Swift.String] {
+      @objc get
+    }
+    @objc public var httpStatusCode: Swift.Int32 {
+      get
+    }
+    @objc public var didSucceed: Swift.Bool {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.ResultUpload
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRResultUploadResponse) public class ResultUploadResponse : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var guid: Swift.String? {
+      get
+    }
+    @objc public var error: [Swift.String]? {
+      get
+    }
+    public var save: SpeedtestSDK.AnyCodable? {
+      get
+    }
+    @objc(save) public var _objc_save: Any? {
+      @objc get
+    }
+    @objc public var status: SpeedtestSDK.STResult.ResultUploadStatusCode {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.ResultUploadResponse
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRResultUploadStatusCode) public enum ResultUploadStatusCode : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case ok, error
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STResult.ResultUploadStatusCode.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STResult.ResultUploadStatusCode.RawValue)
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRSDKInfo) public class SDKInfo : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var version: Swift.String {
+      get
+    }
+    @objc public var commit: Swift.String {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.SDKInfo
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRServer) public class Server : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var id: Swift.Int32 {
+      get
+    }
+    @objc public var dns: SpeedtestSDK.STResult.ServerDNS {
+      get
+    }
+    @objc public var selectionMethod: SpeedtestSDK.STResult.ServerSelectionMethod {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.Server
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRServerDNS) public class ServerDNS : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var ip: Swift.String {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.ServerDNS
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRServerNetwork) public enum ServerNetwork : Swift.Int, Swift.Codable {
+    case unknown = 0, `public` = 1, `private` = 2
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRServerSelection) public class ServerSelection : ObjectiveC.NSObject, Swift.Codable {
+    public var closestPingDetails: SpeedtestSDK.AnyCodable? {
+      get
+    }
+    @objc(closestPingDetails) public var _objc_closestPingDetails: Any? {
+      @objc get
+    }
+    @objc public var closestServerId: Swift.Int32 {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.ServerSelection
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRServerSelectionMethod) public enum ServerSelectionMethod : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case auto, manual
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STResult.ServerSelectionMethod.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STResult.ServerSelectionMethod.RawValue)
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @_inheritsConvenienceInitializers @objc(STVStageError) public class StageError : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var type: SpeedtestSDK.STVideoResult.StageErrorType {
+      get
+    }
+    @objc public var message: Swift.String {
+      get
+    }
+    @objc public var subErrors: [SpeedtestSDK.STVideoResult.SubError]? {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STVideoResult.StageError
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @objc(STVStageErrorType) public enum StageErrorType : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case playerError, userCancel, userBackground, startTimeout, timeout, unknown
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STVideoResult.StageErrorType.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STVideoResult.StageErrorType.RawValue)
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @_inheritsConvenienceInitializers @objc(STVStageEvent) public class StageEvent : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var type: SpeedtestSDK.STVideoResult.StageEventType {
+      get
+    }
+    public var elapsedMs: Swift.Int32? {
+      get
+    }
+    @objc(elapsedMs) public var _objc_elapsedMs: Foundation.NSNumber? {
+      @objc get
+    }
+    public var bitrate: Swift.Int32? {
+      get
+    }
+    @objc(bitrate) public var _objc_bitrate: Foundation.NSNumber? {
+      @objc get
+    }
+    @objc public var rendition: Swift.String? {
+      get
+    }
+    @objc public var startTimestamp: Swift.Int64 {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STVideoResult.StageEvent
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @objc(STVStageEventType) public enum StageEventType : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case cancel, complete, failure, firstFrame, preplayBuffer, renditionShift, resume, stalling, start
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STVideoResult.StageEventType.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STVideoResult.StageEventType.RawValue)
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @_inheritsConvenienceInitializers @objc(STVStageResult) public class StageResult : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var type: SpeedtestSDK.STVideoResult.StageType {
+      get
+    }
+    @objc public var url: SpeedtestSDK.STVideoResult.AssetUrl {
+      get
+    }
+    @objc public var colo: Swift.String? {
+      get
+    }
+    public var elapsedMs: Swift.Int32? {
+      get
+    }
+    @objc(elapsedMs) public var _objc_elapsedMs: Foundation.NSNumber? {
+      @objc get
+    }
+    public var timeToFirstFrameMs: Swift.Int32? {
+      get
+    }
+    @objc(timeToFirstFrameMs) public var _objc_timeToFirstFrameMs: Foundation.NSNumber? {
+      @objc get
+    }
+    public var stallMs: Swift.Int32? {
+      get
+    }
+    @objc(stallMs) public var _objc_stallMs: Foundation.NSNumber? {
+      @objc get
+    }
+    public var stallRatio: Swift.Float? {
+      get
+    }
+    @objc(stallRatio) public var _objc_stallRatio: Foundation.NSNumber? {
+      @objc get
+    }
+    public var stallPercentage: Swift.Float? {
+      get
+    }
+    @objc(stallPercentage) public var _objc_stallPercentage: Foundation.NSNumber? {
+      @objc get
+    }
+    public var advanceCriteriaMet: Swift.Bool? {
+      get
+    }
+    @objc(advanceCriteriaMet) public var _objc_advanceCriteriaMet: Swift.Bool {
+      @objc get
+    }
+    @objc public var events: [SpeedtestSDK.STVideoResult.StageEvent] {
+      get
+    }
+    @objc public var error: SpeedtestSDK.STVideoResult.StageError? {
+      get
+    }
+    @objc public var video: Swift.String {
+      get
+    }
+    @objc public var rendition: Swift.String? {
+      get
+    }
+    public var meanBitrate: Swift.Int32? {
+      get
+    }
+    @objc(meanBitrate) public var _objc_meanBitrate: Foundation.NSNumber? {
+      @objc get
+    }
+    public var meanIndicatedBitrate: Swift.Int32? {
+      get
+    }
+    @objc(meanIndicatedBitrate) public var _objc_meanIndicatedBitrate: Foundation.NSNumber? {
+      @objc get
+    }
+    public var renditionShifts: Swift.Int32? {
+      get
+    }
+    @objc(renditionShifts) public var _objc_renditionShifts: Foundation.NSNumber? {
+      @objc get
+    }
+    @objc public var startRendition: Swift.String? {
+      get
+    }
+    @objc public var endRendition: Swift.String? {
+      get
+    }
+    @objc public var majorityRendition: Swift.String? {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STVideoResult.StageResult
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @objc(STVStageType) public enum StageType : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case adaptive, fixed
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STVideoResult.StageType.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STVideoResult.StageType.RawValue)
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRStartEnd) public class StartEnd : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var connectivity: SpeedtestSDK.STResult.Connectivity {
+      get
+    }
+    @objc public var network: SpeedtestSDK.STResult.Network {
+      get
+    }
+    @objc public var location: SpeedtestSDK.STResult.Location {
+      get
+    }
+    @objc public var telephony: SpeedtestSDK.STResult.Telephony {
+      get
+    }
+    @objc public var timestamp: Foundation.Date {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.StartEnd
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRStoredResult) public class StoredResult : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var appName: Swift.String {
+      get
+    }
+    @objc public var appVersion: Swift.String {
+      get
+    }
+    @objc public var countryName: Swift.String {
+      get
+    }
+    public var downloadMbps: Swift.Double? {
+      get
+    }
+    @objc(downloadMbps) public var _objc_downloadMbps: Foundation.NSNumber? {
+      @objc get
+    }
+    @objc public var endLatitude: Swift.Float {
+      get
+    }
+    @objc public var endLocationType: SpeedtestSDK.STResult.CoordinateSource {
+      get
+    }
+    @objc public var endLongitude: Swift.Float {
+      get
+    }
+    @objc public var guid: Swift.String {
+      get
+    }
+    @objc public var ipAddress: Swift.String {
+      get
+    }
+    @objc public var ispName: Swift.String {
+      get
+    }
+    public var jitter: Swift.Float? {
+      get
+    }
+    @objc(jitter) public var _objc_jitter: Foundation.NSNumber? {
+      @objc get
+    }
+    public var latency: Swift.Float? {
+      get
+    }
+    @objc(latency) public var _objc_latency: Foundation.NSNumber? {
+      @objc get
+    }
+    public var mcc: Swift.Int32? {
+      get
+    }
+    @objc(mcc) public var _objc_mcc: Foundation.NSNumber? {
+      @objc get
+    }
+    public var mnc: Swift.Int32? {
+      get
+    }
+    @objc(mnc) public var _objc_mnc: Foundation.NSNumber? {
+      @objc get
+    }
+    @objc public var model: Swift.String {
+      get
+    }
+    @objc public var networkOperatorName: Swift.String? {
+      get
+    }
+    @objc public var osVersion: Swift.String {
+      get
+    }
+    public var plossRecv: Swift.Int16? {
+      get
+    }
+    @objc(plossRecv) public var _objc_plossRecv: Foundation.NSNumber? {
+      @objc get
+    }
+    public var plossSent: Swift.Int16? {
+      get
+    }
+    @objc(plossSent) public var _objc_plossSent: Foundation.NSNumber? {
+      @objc get
+    }
+    public var ploss: Swift.Float? {
+      get
+    }
+    @objc(ploss) public var _objc_ploss: Foundation.NSNumber? {
+      @objc get
+    }
+    @objc public var postConnectionType: SpeedtestSDK.STResult.StoredResultConnectionType {
+      get
+    }
+    @objc public var preConnectionType: SpeedtestSDK.STResult.StoredResultConnectionType {
+      get
+    }
+    @objc public var regionName: Swift.String {
+      get
+    }
+    @objc public var resultDate: Foundation.Date {
+      get
+    }
+    @objc public var sdkVersion: Swift.String {
+      get
+    }
+    @objc public var serverId: Swift.Int32 {
+      get
+    }
+    @objc public var serverName: Swift.String {
+      get
+    }
+    @objc public var serverSponsorName: Swift.String {
+      get
+    }
+    @objc public var startLatitude: Swift.Float {
+      get
+    }
+    @objc public var startLocationType: SpeedtestSDK.STResult.CoordinateSource {
+      get
+    }
+    @objc public var startLongitude: Swift.Float {
+      get
+    }
+    public var supplementalData: SpeedtestSDK.AnyCodable? {
+      get
+    }
+    @objc(supplementalData) public var _objc_supplementalData: Any? {
+      @objc get
+    }
+    public var uploadMbps: Swift.Double? {
+      get
+    }
+    @objc(uploadMbps) public var _objc_uploadMbps: Foundation.NSNumber? {
+      @objc get
+    }
+    @objc public var formattedAddress: Swift.String? {
+      get
+    }
+    @objc public var placeName: Swift.String? {
+      get
+    }
+    @objc public var placeType: Swift.String? {
+      get
+    }
+    @objc public var subregion: Swift.String? {
+      get
+    }
+    @objc public var subSubregion: Swift.String? {
+      get
+    }
+    @objc public var postalCode: Swift.String? {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.StoredResult
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRStoredResultConnectionType) public enum StoredResultConnectionType : Swift.Int, Swift.Codable {
+    case unknown = 0, unknownCellular = 1, wifi = 2, gprs = 3, edge = 4, wcdma = 5, hsdpa = 6, hsupa = 7, cdma1x = 8, cdmaEvdoRev0 = 9, cdmaEvdoRevA = 10, ehrpd = 11, lte = 12, ethernet = 13, bluetooth = 14, cdmaEvdoRevB = 16, nrnsa = 17, nr = 18
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @_inheritsConvenienceInitializers @objc(STVSubError) public class SubError : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var message: Swift.String {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STVideoResult.SubError
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRTelephony) public class Telephony : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var serviceSubscriberCellularProviders: [SpeedtestSDK.STResult.CarrierInfo] {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.Telephony
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRTestMethod) public enum TestMethod : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case tcp, http
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STResult.TestMethod.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STResult.TestMethod.RawValue)
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @objc(STVTestQuality) public enum TestQuality : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case good, bad
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STVideoResult.TestQuality.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STVideoResult.TestQuality.RawValue)
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRTraceroute) public class Traceroute : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var ip: Swift.String {
+      get
+    }
+    @objc public var host: Swift.String {
+      get
+    }
+    @objc public var hops: [SpeedtestSDK.STResult.TracerouteHop] {
+      get
+    }
+    @objc public var errorCode: Swift.Int32 {
+      get
+    }
+    @objc public var errorMessage: Swift.String? {
+      get
+    }
+    @objc public var elapsedMicros: Swift.Int64 {
+      get
+    }
+    @objc public var interfaceInfo: SpeedtestSDK.STResult.InterfaceInfo {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.Traceroute
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRTracerouteHop) public class TracerouteHop : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var ttl: Swift.Int32 {
+      get
+    }
+    @objc public var pings: [SpeedtestSDK.STResult.TracerouteHost] {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.TracerouteHop
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRTracerouteHost) public class TracerouteHost : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var ip: Swift.String {
+      get
+    }
+    @objc public var timeMicros: Swift.Int64 {
+      get
+    }
+    @objc public var mtu: Swift.Int32 {
+      get
+    }
+    @objc public var rttl: Swift.Int32 {
+      get
+    }
+    @objc public var state: SpeedtestSDK.STResult.TracerouteState {
+      get
+    }
+    @objc public var error: SpeedtestSDK.STResult.OoklaError? {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.TracerouteHost
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @objc(STRTracerouteState) public enum TracerouteState : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case success, timeToLiveExceeded, error, errorTimeout, maximumTransmissionUnitExceeded, errorHostUnreachable, errorNetworkUnreachable, errorPortUnreachable, errorUnreachable
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STResult.TracerouteState.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STResult.TracerouteState.RawValue)
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRTraceroutes) public class Traceroutes : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var routes: [SpeedtestSDK.STResult.Traceroute] {
+      get
+    }
+    @objc public var timeoutMillis: Swift.Int64 {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.Traceroutes
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRTransfer) public class Transfer : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var timestamp: Foundation.Date? {
+      get
+    }
+    @objc public var durationMicros: Swift.Int64 {
+      get
+    }
+    @objc public var speedKbps: Swift.Int64 {
+      get
+    }
+    @objc public var bytesTransferred: Swift.Int64 {
+      get
+    }
+    @objc public var failedConnections: Swift.Int64 {
+      get
+    }
+    public var incompleteSpeedKbps: Swift.Int64? {
+      get
+    }
+    @objc(incompleteSpeedKbps) public var _objc_incompleteSpeedKbps: Foundation.NSNumber? {
+      @objc get
+    }
+    public var incompleteBytes: Swift.Int64? {
+      get
+    }
+    @objc(incompleteBytes) public var _objc_incompleteBytes: Foundation.NSNumber? {
+      @objc get
+    }
+    public var incompleteProgress: Swift.Double? {
+      get
+    }
+    @objc(incompleteProgress) public var _objc_incompleteProgress: Foundation.NSNumber? {
+      @objc get
+    }
+    @objc public var scaling: SpeedtestSDK.STResult.TransferScaling? {
+      get
+    }
+    @objc public var stop: SpeedtestSDK.STResult.TransferStop? {
+      get
+    }
+    @objc public var error: SpeedtestSDK.STResult.OoklaError? {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.Transfer
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRTransferScaling) public class TransferScaling : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var finalConnections: Swift.Int64 {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.TransferScaling
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRTransferStop) public class TransferStop : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var speedKbps: Swift.Int64 {
+      get
+    }
+    @objc public var elapsedMillis: Swift.Int64 {
+      get
+    }
+    @objc public var bytesTransferred: Swift.Int64 {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.TransferStop
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRUpload) public class Upload : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var primary: SpeedtestSDK.STResult.BandwidthMeasureMethod {
+      get
+    }
+    @objc public var server: SpeedtestSDK.STResult.Transfer? {
+      get
+    }
+    @objc public var client: SpeedtestSDK.STResult.Transfer {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.Upload
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRUserData) public class UserData : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var idfa: Swift.String? {
+      get
+    }
+    @objc public var idfv: Swift.String? {
+      get
+    }
+    public var idfaEnabled: Swift.Bool? {
+      get
+    }
+    @objc(idfaEnabled) public var _objc_idfaEnabled: Swift.Bool {
+      @objc get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.UserData
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @_inheritsConvenienceInitializers @objc(STVUserResult) public class UserResult : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var testQuality: SpeedtestSDK.STVideoResult.TestQuality {
+      get
+    }
+    @objc public var maxResolution: Swift.String {
+      get
+    }
+    @objc public var stallPercentage: Swift.Float {
+      get
+    }
+    @objc public var loadTimeMs: Swift.Int32 {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STVideoResult.UserResult
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @_inheritsConvenienceInitializers @objc(STVVideo) public class Video : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var name: Swift.String {
+      get
+    }
+    @objc public var renditions: [SpeedtestSDK.STVideoResult.Rendition] {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STVideoResult.Video
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @_inheritsConvenienceInitializers @objc(STVVideoError) public class VideoError : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var type: SpeedtestSDK.STVideoResult.VideoErrorType {
+      get
+    }
+    @objc public var message: Swift.String {
+      get
+    }
+    @objc public var suberrors: [SpeedtestSDK.STVideoResult.SubError]? {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STVideoResult.VideoError
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+extension SpeedtestSDK.STVideoResult {
+  @objc(STVVideoErrorType) public enum VideoErrorType : Swift.Int, Swift.RawRepresentable, Swift.Codable {
+    case noConfig, noPlaylist, invalidConfig, playerError, userCancel, userBackground, startTimeout, timeout, unknown
+    public typealias RawValue = Swift.String
+    public var rawValue: SpeedtestSDK.STVideoResult.VideoErrorType.RawValue {
+      get
+    }
+    public init?(rawValue: SpeedtestSDK.STVideoResult.VideoErrorType.RawValue)
+  }
+}
+@_inheritsConvenienceInitializers @objc(STVVideoResult) public class STVideoResult : ObjectiveC.NSObject, Swift.Codable {
+  @objc public var userResult: SpeedtestSDK.STVideoResult.UserResult? {
+    get
+  }
+  @objc public var resolution: SpeedtestSDK.STVideoResult.Resolution {
+    get
+  }
+  @objc public var stages: [SpeedtestSDK.STVideoResult.StageResult] {
+    get
+  }
+  @objc public var videos: [SpeedtestSDK.STVideoResult.Video] {
+    get
+  }
+  @objc public var error: SpeedtestSDK.STVideoResult.VideoError? {
+    get
+  }
+  @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+  @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STVideoResult
+  @objc override dynamic public init()
+  @objc deinit
+  public func encode(to encoder: any Swift.Encoder) throws
+  required public init(from decoder: any Swift.Decoder) throws
+}
+extension SpeedtestSDK.STResult {
+  @_inheritsConvenienceInitializers @objc(STRWifi) public class Wifi : ObjectiveC.NSObject, Swift.Codable {
+    @objc public var bssid: Swift.String? {
+      get
+    }
+    @objc public var ssid: Swift.String? {
+      get
+    }
+    @objc public func toJson(pretty: Swift.Bool = false) throws -> Foundation.Data
+    @objc public static func parse(json: Foundation.Data) throws -> SpeedtestSDK.STResult.Wifi
+    @objc override dynamic public init()
+    @objc deinit
+    public func encode(to encoder: any Swift.Encoder) throws
+    required public init(from decoder: any Swift.Decoder) throws
+  }
+}
+public typealias STResultFetchCallback = (SpeedtestSDK.STResult.StoredResult?, SpeedtestSDK.STResult.OoklaError?) -> Swift.Void
+public class STMainThreadConfigHandler : SpeedtestSDK.STConfigHandler {
+  public init(delegate: any SpeedtestSDK.STConfigHandlerDelegate)
+  @objc public func onConfigFetchStarted()
+  @objc public func onConfigFetchFinished(_ config: SpeedtestSDK.STValidatedConfig?)
+  @objc public func onConfigFetchFailedBinary(_ error: Foundation.Data)
+  public func onConfigFetchFailed(_ error: SpeedtestSDK.STResult.OoklaError)
+  @objc public func onServerSelectionStarted()
+  @objc public func onSelectionFinished(_ result: [SpeedtestSDK.STServerSelection])
+  @objc public func onSelectionFailed(_ result: [SpeedtestSDK.STServerSelection])
+  @objc deinit
+}
+public class STMainThreadTestHandler : SpeedtestSDK.STTestHandler {
+  public init(delegate: any SpeedtestSDK.STTestHandlerDelegate)
+  @objc public func onTestStarted(_ taskController: SpeedtestSDK.STTaskManagerController?)
+  @objc public func onResultUploadFinishedBinary(_ json: Foundation.Data)
+  @objc public func onTestFinishedBinary(_ json: Foundation.Data)
+  @objc public func onTestFailedBinary(_ error: Foundation.Data, json: Foundation.Data)
+  @objc public func onTestCanceled()
+  @objc public func onThroughputTaskStarted(_ taskController: SpeedtestSDK.STTaskManagerController?, remoteIp: Swift.String, localIp: Swift.String)
+  @objc public func onThroughputStageStarted(_ taskController: SpeedtestSDK.STTaskManagerController?, stage: SpeedtestSDK.STThroughputStage)
+  @objc public func onThroughputStageFailed(_ error: Foundation.Data, stage: SpeedtestSDK.STThroughputStage, json: Foundation.Data)
+  @objc public func onThroughputStageFinished(_ taskController: SpeedtestSDK.STTaskManagerController?, stage: SpeedtestSDK.STThroughputStage)
+  @objc public func onThroughputTaskFinished(_ taskController: SpeedtestSDK.STTaskManagerController?, result: SpeedtestSDK.STThroughputResult)
+  @objc public func onPacketlossFinished(_ taskController: SpeedtestSDK.STTaskManagerController?, result: SpeedtestSDK.STPacketlossResult)
+  @objc public func onLatencyProgressUpdated(_ result: SpeedtestSDK.STLatencyResult, progressPercentage: Swift.Float)
+  @objc public func onLatencyFinished(_ taskController: SpeedtestSDK.STTaskManagerController?, result: SpeedtestSDK.STLatencyResult)
+  @objc public func onDownloadProgressUpdated(_ result: SpeedtestSDK.STTransferResult, progressPercentage: Swift.Float)
+  @objc public func onDownloadFinished(_ taskController: SpeedtestSDK.STTaskManagerController?, result: SpeedtestSDK.STTransferResult)
+  @objc public func onUploadProgressUpdated(_ result: SpeedtestSDK.STTransferResult, progressPercentage: Swift.Float)
+  @objc public func onUploadFinished(_ taskController: SpeedtestSDK.STTaskManagerController?, result: SpeedtestSDK.STTransferResult)
+  @objc public func onTracerouteStarted(_ taskController: SpeedtestSDK.STTaskManagerController?, host: Swift.String, ip: Swift.String)
+  @objc public func onTracerouteHopBinary(_ host: Swift.String, hopJson: Foundation.Data)
+  @objc public func onTracerouteFinishedBinary(_ taskController: SpeedtestSDK.STTaskManagerController?, host: Swift.String, tracerouteJson: Foundation.Data)
+  @objc public func onTracerouteFailedBinary(_ error: Foundation.Data, host: Swift.String, tracerouteJson: Foundation.Data)
+  @objc public func onTracerouteCanceled(_ host: Swift.String)
+  @objc public func onDeviceStateCaptureFinishedBinary(_ data: Foundation.Data)
+  @objc public func onDeviceStateCaptureFailedBinary(_ error: Foundation.Data)
+  @objc public func onVideoTestStarted()
+  @objc public func onVideoTestUpdate(_ state: SpeedtestSDK.STVideoTestState)
+  @objc public func onVideoTestCancelled(_ result: SpeedtestSDK.STVideoSuiteResult?)
+  @objc public func onVideoTestFailed(_ error: SpeedtestSDK.STVideoTestError, result: SpeedtestSDK.STVideoSuiteResult?)
+  @objc public func onVideoTestComplete(_ result: SpeedtestSDK.STVideoSuiteResult?)
+  @objc deinit
+}
+public typealias ConfigCallback = (SpeedtestSDK.STValidatedConfig?, SpeedtestSDK.STResult.OoklaError?) -> Swift.Void
+@objc extension SpeedtestSDK.STConfig {
+  @objc dynamic public func validate(callback: @escaping SpeedtestSDK.ConfigCallback)
+}
+@objc public protocol STConfigHandlerDelegate : ObjectiveC.NSObjectProtocol {
+  @objc optional func onConfigFetchStarted()
+  @objc optional func onConfigFetchFinished(_ config: SpeedtestSDK.STValidatedConfig)
+  @objc optional func onConfigFetchFailed(_ error: SpeedtestSDK.STResult.OoklaError)
+  @objc optional func onConfigFetchFailedBinary(_ error: Foundation.Data)
+  @objc optional func onServerSelectionStarted()
+  @objc optional func onSelectionFinished(_ result: [SpeedtestSDK.STServerSelection])
+  @objc optional func onSelectionFailed(_ result: [SpeedtestSDK.STServerSelection])
+}
+@objc @_inheritsConvenienceInitializers @available(iOS 10.0, *)
+public class STSchedulerFactory : ObjectiveC.NSObject {
+  @objc public static func newPeriodicScheduler(_ periodSeconds: Swift.Int64, delaySeconds: Swift.Int64) -> any SpeedtestSDK.STScheduler
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension SpeedtestSDK.STTask {
+  public static func newCaptureNetworkTask() -> SpeedtestSDK.STTask
+  public static func newCustomThroughputTask(stages: [SpeedtestSDK.STThroughputStage]) -> SpeedtestSDK.STTask
+}
+extension SpeedtestSDK.STThroughputStage {
+  public var numberValue: Foundation.NSNumber {
+    get
+  }
+}
+@objc public protocol STTestHandlerDelegate : ObjectiveC.NSObjectProtocol {
+  @objc func onResultUploadFinished(result: SpeedtestSDK.STResult.ResultUpload?, _ error: SpeedtestSDK.STResult.OoklaError?)
+  @objc func onTestFinished(_ result: SpeedtestSDK.STSpeedtestResult)
+  @objc optional func onTestStarted(_ taskController: SpeedtestSDK.STTaskManagerController?)
+  @objc optional func onTestCanceled()
+  @objc optional func onTestFailed(_ error: SpeedtestSDK.STResult.OoklaError, result: SpeedtestSDK.STSpeedtestResult?)
+  @objc optional func onThroughputTaskStarted(_ taskController: SpeedtestSDK.STTaskManagerController?, remoteIp: Swift.String, localIp: Swift.String)
+  @objc optional func onThroughputStageStarted(_ taskController: SpeedtestSDK.STTaskManagerController?, stage: SpeedtestSDK.STThroughputStage)
+  @objc optional func onThroughputStageFailed(_ error: SpeedtestSDK.STResult.OoklaError?, stage: SpeedtestSDK.STThroughputStage, result: SpeedtestSDK.STSpeedtestResult?)
+  @objc optional func onThroughputStageFinished(_ taskController: SpeedtestSDK.STTaskManagerController?, stage: SpeedtestSDK.STThroughputStage)
+  @objc optional func onThroughputTaskFinished(_ taskController: SpeedtestSDK.STTaskManagerController?, result: SpeedtestSDK.STThroughputResult)
+  @objc optional func onPacketlossFinished(_ taskController: SpeedtestSDK.STTaskManagerController?, result: SpeedtestSDK.STPacketlossResult)
+  @objc optional func onLatencyProgressUpdated(_ result: SpeedtestSDK.STLatencyResult, progressPercentage: Swift.Float)
+  @objc optional func onLatencyFinished(_ taskController: SpeedtestSDK.STTaskManagerController?, result: SpeedtestSDK.STLatencyResult)
+  @objc optional func onDownloadProgressUpdated(_ result: SpeedtestSDK.STTransferResult, progressPercentage: Swift.Float)
+  @objc optional func onDownloadFinished(_ taskController: SpeedtestSDK.STTaskManagerController?, result: SpeedtestSDK.STTransferResult)
+  @objc optional func onUploadProgressUpdated(_ result: SpeedtestSDK.STTransferResult, progressPercentage: Swift.Float)
+  @objc optional func onUploadFinished(_ taskController: SpeedtestSDK.STTaskManagerController?, result: SpeedtestSDK.STTransferResult)
+  @objc optional func onTracerouteStarted(_ taskController: SpeedtestSDK.STTaskManagerController?, host: Swift.String, ip: Swift.String)
+  @objc optional func onTracerouteHop(_ host: Swift.String, hop: SpeedtestSDK.STResult.TracerouteHop)
+  @objc optional func onTracerouteFinished(_ taskController: SpeedtestSDK.STTaskManagerController?, host: Swift.String, traceroute: SpeedtestSDK.STResult.Traceroute)
+  @objc optional func onTracerouteFailed(_ error: SpeedtestSDK.STResult.OoklaError, host: Swift.String, traceroute: SpeedtestSDK.STResult.Traceroute?)
+  @objc optional func onTracerouteCanceled(_ host: Swift.String)
+}
+@objc @_hasMissingDesignatedInitializers public class STSpeedtestResult : ObjectiveC.NSObject {
+  @objc public func getResult() -> SpeedtestSDK.STResult
+  @objc public func getStartConnectionType() -> SpeedtestSDK.STResult.ConnectionType
+  @objc public func getEndConnectionType() -> SpeedtestSDK.STResult.ConnectionType
+  @objc public func getISPName() -> Swift.String
+  @objc public func getCarrierInfo() -> [SpeedtestSDK.STResult.CarrierInfo]
+  @objc public func getStartLocation() -> SpeedtestSDK.STResult.Location
+  @objc public func getEndLocation() -> SpeedtestSDK.STResult.Location?
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc public class STSpeedtestSDK : ObjectiveC.NSObject {
+  public enum STSDKError : Swift.Error {
+    case alreadyInitialized, initializationFailure, notInitialized, taskCreationFailed
+    public static func == (a: SpeedtestSDK.STSpeedtestSDK.STSDKError, b: SpeedtestSDK.STSpeedtestSDK.STSDKError) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  @objc(sharedInstance) public static var shared: SpeedtestSDK.STSpeedtestSDK {
+    get
+  }
+  @available(swift, obsoleted: 1.0)
+  @objc(initSDKWithAPIKey:options:error:) public func initSDKWithOptions(_ apiKey: Swift.String, options: SpeedtestSDK.STSpeedtestOptions) throws
+  @available(swift, obsoleted: 1.0)
+  @objc(initSDKWithAPIKey:error:) public func initSDKWithoutOptions(_ apiKey: Swift.String) throws
+  public func initSDK(_ apiKey: Swift.String, options: SpeedtestSDK.STSpeedtestOptions? = nil) throws
+  @objc(setLogHandler:error:) public func setLogHandler(_ handler: (any SpeedtestSDK.STLogHandler)?) throws
+  @objc public func newTaskManager(_ testHandler: (any SpeedtestSDK.STTestHandler)?, config: SpeedtestSDK.STValidatedConfig?) throws -> SpeedtestSDK.STTaskManager
+  @objc public func newTaskManagerWithAutoAdvance(_ testHandler: (any SpeedtestSDK.STTestHandler)?, config: SpeedtestSDK.STValidatedConfig?) throws -> SpeedtestSDK.STTaskManager
+  @objc(fetchResultWithGUID:resultKey:callback:) public func fetchResult(withGUID resultGuid: Swift.String, resultKey: Swift.String, callback: @escaping SpeedtestSDK.STResultFetchCallback)
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension SpeedtestSDK.KeychainSwiftAccessOptions : Swift.Equatable {}
+extension SpeedtestSDK.KeychainSwiftAccessOptions : Swift.Hashable {}
+extension SpeedtestSDK.STResult.BandwidthMeasureMethod : Swift.Equatable {}
+extension SpeedtestSDK.STResult.BandwidthMeasureMethod : Swift.Hashable {}
+extension SpeedtestSDK.STResult.ConnectionSelectionMethod : Swift.Equatable {}
+extension SpeedtestSDK.STResult.ConnectionSelectionMethod : Swift.Hashable {}
+extension SpeedtestSDK.STResult.ConnectionThreadingType : Swift.Equatable {}
+extension SpeedtestSDK.STResult.ConnectionThreadingType : Swift.Hashable {}
+extension SpeedtestSDK.STResult.ConnectionType : Swift.Equatable {}
+extension SpeedtestSDK.STResult.ConnectionType : Swift.Hashable {}
+extension SpeedtestSDK.STResult.ConnectionType : Swift.RawRepresentable {}
+extension SpeedtestSDK.STResult.CoordinateSource : Swift.Equatable {}
+extension SpeedtestSDK.STResult.CoordinateSource : Swift.Hashable {}
+extension SpeedtestSDK.STResult.CoordinateSource : Swift.RawRepresentable {}
+extension SpeedtestSDK.STResult.DetailedConnectionType : Swift.Equatable {}
+extension SpeedtestSDK.STResult.DetailedConnectionType : Swift.Hashable {}
+extension SpeedtestSDK.STResult.ErrorType : Swift.Equatable {}
+extension SpeedtestSDK.STResult.ErrorType : Swift.Hashable {}
+extension SpeedtestSDK.STResult.LocationStatus : Swift.Equatable {}
+extension SpeedtestSDK.STResult.LocationStatus : Swift.Hashable {}
+extension SpeedtestSDK.ProviderDisplaySource : Swift.Equatable {}
+extension SpeedtestSDK.ProviderDisplaySource : Swift.Hashable {}
+extension SpeedtestSDK.ProviderDisplaySource : Swift.RawRepresentable {}
+extension SpeedtestSDK.STResult.ResultUploadStatusCode : Swift.Equatable {}
+extension SpeedtestSDK.STResult.ResultUploadStatusCode : Swift.Hashable {}
+extension SpeedtestSDK.STResult.ServerNetwork : Swift.Equatable {}
+extension SpeedtestSDK.STResult.ServerNetwork : Swift.Hashable {}
+extension SpeedtestSDK.STResult.ServerNetwork : Swift.RawRepresentable {}
+extension SpeedtestSDK.STResult.ServerSelectionMethod : Swift.Equatable {}
+extension SpeedtestSDK.STResult.ServerSelectionMethod : Swift.Hashable {}
+extension SpeedtestSDK.STVideoResult.StageErrorType : Swift.Equatable {}
+extension SpeedtestSDK.STVideoResult.StageErrorType : Swift.Hashable {}
+extension SpeedtestSDK.STVideoResult.StageEventType : Swift.Equatable {}
+extension SpeedtestSDK.STVideoResult.StageEventType : Swift.Hashable {}
+extension SpeedtestSDK.STVideoResult.StageType : Swift.Equatable {}
+extension SpeedtestSDK.STVideoResult.StageType : Swift.Hashable {}
+extension SpeedtestSDK.STResult.StoredResultConnectionType : Swift.Equatable {}
+extension SpeedtestSDK.STResult.StoredResultConnectionType : Swift.Hashable {}
+extension SpeedtestSDK.STResult.StoredResultConnectionType : Swift.RawRepresentable {}
+extension SpeedtestSDK.STResult.TestMethod : Swift.Equatable {}
+extension SpeedtestSDK.STResult.TestMethod : Swift.Hashable {}
+extension SpeedtestSDK.STVideoResult.TestQuality : Swift.Equatable {}
+extension SpeedtestSDK.STVideoResult.TestQuality : Swift.Hashable {}
+extension SpeedtestSDK.STResult.TracerouteState : Swift.Equatable {}
+extension SpeedtestSDK.STResult.TracerouteState : Swift.Hashable {}
+extension SpeedtestSDK.STVideoResult.VideoErrorType : Swift.Equatable {}
+extension SpeedtestSDK.STVideoResult.VideoErrorType : Swift.Hashable {}
+extension SpeedtestSDK.STSpeedtestSDK.STSDKError : Swift.Equatable {}
+extension SpeedtestSDK.STSpeedtestSDK.STSDKError : Swift.Hashable {}
