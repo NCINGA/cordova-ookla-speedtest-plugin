@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.apache.cordova.CallbackContext
+import org.json.JSONArray
 import org.json.JSONObject
 
 class CustomTestHandler(
@@ -36,7 +37,6 @@ class CustomTestHandler(
     fun runTestWithSingleServer(
         count: Int,
         currentIteration: Int = 1,
-        // finalResult: MutableMap<String, Any> = mutableMapOf(),
         testResult: MutableList<ResultDTO> = mutableListOf()
 
 
@@ -46,7 +46,7 @@ class CustomTestHandler(
             val jsonString = convertTestResultsToJson(testResult)
             endpointHandler?.sendData(jsonString);
             Log.i("Final Result", jsonString)
-            callbackContext.success(jsonString)
+            callbackContext.success(convertTestResultsToJsonArray(testResult))
             return
         }
 
@@ -86,7 +86,7 @@ class CustomTestHandler(
 
                     override fun onTestFinished(speedtestResult: SpeedtestResult) {
                         super.onTestFinished(speedtestResult)
-                        val result = speedtestResult.resultObj.toJsonString()
+                        val result = speedtestResult.getResult().toJsonString()
                         testResult.add(ResultDTO("loop$currentIteration", result))
                         CoroutineScope(Dispatchers.Main).launch {
                             delay(timeInterval.toLong() * 1000)
