@@ -43,10 +43,11 @@ class CustomTestHandler(
     ) {
         if (currentIteration > count) {
             endpointHandler = EndpointHandler(endpoint)
-            val jsonString = convertTestResultsToJson(testResult)
-            endpointHandler?.sendData(jsonString);
-            Log.i("Final Result", jsonString)
-            callbackContext.success(convertTestResultsToJsonArray(testResult))
+            val jsonStringResult = convertTestResultsToJson(testResult)
+            val result = convertTestResultsToJsonArray(testResult)
+            endpointHandler?.sendData(jsonStringResult);
+            Log.i("Final Result", result.toString())
+            callbackContext.success(result)
             return
         }
 

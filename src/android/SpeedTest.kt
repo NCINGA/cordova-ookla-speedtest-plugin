@@ -78,7 +78,6 @@ class SpeedTest : CordovaPlugin() {
                 )
                 Log.i(TAG, "Config: $config, Endpoint: $endpoint, Count: $count")
                 customTestHandler?.runTestWithSingleServer(count)
-                callbackContext.success("Speed test started successfully.")
             } catch (e: Exception) {
                 Log.e(TAG, "Error initializing SpeedtestSDK: ${e.message}")
                 callbackContext.error("Error initializing SpeedtestSDK: ${e.message}")
