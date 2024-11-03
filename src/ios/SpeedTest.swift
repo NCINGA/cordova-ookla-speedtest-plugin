@@ -54,27 +54,26 @@ class SpeedTest: CDVPlugin {
             
             let count = jsonObject["count"] as? Int32 ?? 1
 
+            let timeInterval = jsonObject["timeInterval"] as? Int32 ?? 10
+
             if sdk == nil {
                 initializeSDK(apiKey: apiKey)
             }
-            
+
             guard let sdk = sdk else {
                 sendError(message: "SDK initialization failed.", callbackId: command.callbackId)
                 return
             }
-            
-            customTestHandler = CustomTestHandler(speedTestsdk: sdk, configName: config, count: count, endpoint: endpoint) { result in
+
+            customTestHandler = CustomTestHandler(speedTestsdk: sdk, configName: config, count: count, endpoint: endpoint, timeInterval: timeInterval) { result in
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: result)
                 print(result)
                 self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
             }
-            
+
             customTestHandler?.runTestWithSingleServer()
-            
-            let successMessage = "Speed test started successfully."
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: successMessage)
-            self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
-            
+
+
         } catch {
             sendError(message: "Error parsing JSON: \(error.localizedDescription)", callbackId: command.callbackId)
         }
