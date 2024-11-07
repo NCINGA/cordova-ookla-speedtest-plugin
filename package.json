@@ -1,6 +1,6 @@
 {
   "name": "ookla-speedtest",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Required API key and config",
   "cordova": {
     "id": "com.ncinga.speedtest",

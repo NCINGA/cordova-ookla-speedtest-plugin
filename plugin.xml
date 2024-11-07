@@ -65,6 +65,7 @@
         <source-file src="src/ios/SpeedTest.swift"/>
         <source-file src="src/ios/CustomTestHandler.swift"/>
         <source-file src="src/ios/EndpontHandler.swift"/>
+        <source-file src="src/ios/ResultDTO.swift"/>
         <config-file target="*-Info.plist" parent="NSAppTransportSecurity">
             <dict>
                 <key>NSAllowsArbitraryLoads</key>
