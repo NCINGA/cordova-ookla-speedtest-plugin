@@ -3,6 +3,7 @@ import android.util.Log
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.io.IOException
 
 class EndpointHandler(private val endpoint: String) {
@@ -13,6 +14,7 @@ class EndpointHandler(private val endpoint: String) {
             Log.e("EndpointHandler", "Invalid URL.")
             return
         }
+
         val requestBody = body.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val request = Request.Builder()
             .url(url)

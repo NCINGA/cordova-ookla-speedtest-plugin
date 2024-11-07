@@ -21,13 +21,21 @@ class SpeedTest : CordovaPlugin() {
                 val jsonObject = parseAndValidateJson(args, callbackContext) ?: return false
                 handleStartTesting(jsonObject, callbackContext)
             }
+
+            "stopTesting" -> {
+                customTestHandler?.stopTesting()
+                return true;
+            }
+
             else -> false
         }
     }
 
-    private fun parseAndValidateJson(args: JSONArray, callbackContext: CallbackContext): JSONObject? {
+    private fun parseAndValidateJson(
+        args: JSONArray,
+        callbackContext: CallbackContext
+    ): JSONObject? {
         val jsonString = args.optString(0)
-
         if (jsonString.isNullOrEmpty()) {
             Log.e(TAG, "First argument is not a valid JSON string.")
             callbackContext.error("First argument is not a valid JSON string.")
@@ -43,7 +51,10 @@ class SpeedTest : CordovaPlugin() {
         }
     }
 
-    private fun handleStartTesting(jsonObject: JSONObject, callbackContext: CallbackContext): Boolean {
+    private fun handleStartTesting(
+        jsonObject: JSONObject,
+        callbackContext: CallbackContext
+    ): Boolean {
         val apiKey = jsonObject.optString("apiKey")
         val config = jsonObject.optString("config")
         val endpoint = jsonObject.optString("endpoint")
@@ -85,4 +96,6 @@ class SpeedTest : CordovaPlugin() {
         }
         return true
     }
+
+
 }
