@@ -21,18 +21,20 @@ class CustomTestHandler(
     private val speedtestSDK: SpeedtestSDK,
     private val configName: String,
     private val timeInterval: Int,
-    private val endpoint: String,
+    private var apiService: APIService,
     private val callbackContext: CallbackContext
 
 ) : TestHandlerBase() {
     private var taskManager: TaskManager? = null
     private val TAG = "SpeedTest"
-    private var endpointHandler: EndpointHandler? = null
+
+
     fun runTestWithSingleServer(
         count: Int,
-        currentIteration: Int = 1
+        currentIteration: Int = 1,
+        endpointURL: String
     ) {
-        endpointHandler = EndpointHandler(endpoint)
+
         if (count != -1 && currentIteration > count) {
             Log.i(TAG, "All Test completed")
             return
@@ -74,11 +76,11 @@ class CustomTestHandler(
                     override fun onTestFinished(speedtestResult: SpeedtestResult) {
                         super.onTestFinished(speedtestResult)
                         val result = speedtestResult.getResult().toJsonString()
-                        sendUpdate(result, currentIteration)
+                        sendUpdate(endpointURL, result, currentIteration)
 
                         CoroutineScope(Dispatchers.Main).launch {
                             delay(timeInterval.toLong() * 1000)
-                            runTestWithSingleServer(count, currentIteration + 1)
+                            runTestWithSingleServer(count, currentIteration + 1, endpointURL)
                         }
                     }
 
@@ -92,7 +94,7 @@ class CustomTestHandler(
 
                         CoroutineScope(Dispatchers.Main).launch {
                             delay(timeInterval.toLong() * 1000)
-                            runTestWithSingleServer(count, currentIteration + 1)
+                            runTestWithSingleServer(count, currentIteration + 1, endpointURL)
                         }
                     }
                 }
@@ -110,14 +112,14 @@ class CustomTestHandler(
         ValidatedConfig.validate(config, MainThreadConfigHandler(configHandler))
     }
 
-    private fun sendUpdate(result: String, iteration: Int) {
+    private fun sendUpdate(endpointURL: String, result: String, iteration: Int) {
         val jsonObject = JSONObject()
         jsonObject.put("iteration", iteration)
         val jsonResult = JSONObject(result)
         jsonObject.put("result", jsonResult)
         val pluginResult = PluginResult(PluginResult.Status.OK, jsonObject)
         pluginResult.keepCallback = true
-        endpointHandler?.sendData(jsonObject.toString())
+        apiService.sendData(endpointURL, jsonObject.toString())
         callbackContext.sendPluginResult(pluginResult)
     }
 
