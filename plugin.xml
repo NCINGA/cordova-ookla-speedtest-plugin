@@ -53,7 +53,7 @@
     </platform>
 
     <platform name="ios">
-        <preference name="swift_version" value="4.0" />
+        <preference name="SwiftVersion" value="5.9.2" />
         <source-file src="src/frameworks/SpeedtestSDK.xcframework" target-dir="lib" framework="true" />
         <framework src="libc++.tbd" />
         <framework src="libz.tbd" />
