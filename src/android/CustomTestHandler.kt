@@ -3,16 +3,19 @@ package com.ncinga.speedtest
 import android.util.Log
 import com.ookla.speedtest.sdk.*
 import com.ookla.speedtest.sdk.config.Config
+import com.ookla.speedtest.sdk.config.Task
 import com.ookla.speedtest.sdk.config.ValidatedConfig
 import com.ookla.speedtest.sdk.handler.TaskManagerController
 import com.ookla.speedtest.sdk.handler.TestHandlerBase
 import com.ookla.speedtest.sdk.model.LatencyResult
+import com.ookla.speedtest.sdk.model.PacketlossResult
+import com.ookla.speedtest.sdk.model.ThroughputResult
+import com.ookla.speedtest.sdk.model.ThroughputStage
 import com.ookla.speedtest.sdk.model.TransferResult
 import com.ookla.speedtest.sdk.result.OoklaError
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.ookla.speedtest.sdk.result.ResultUpload
+import com.ookla.speedtest.sdk.result.Traceroute
+import com.ookla.speedtest.sdk.result.TracerouteHop
 import org.apache.cordova.CallbackContext
 import org.apache.cordova.PluginResult
 import org.json.JSONObject
@@ -20,106 +23,203 @@ import org.json.JSONObject
 class CustomTestHandler(
     private val speedtestSDK: SpeedtestSDK,
     private val configName: String,
-    private val timeInterval: Int,
-    private var apiService: APIService,
+    private var endpointURL: String,
     private val callbackContext: CallbackContext
 
 ) : TestHandlerBase() {
     private var taskManager: TaskManager? = null
-    private val TAG = "SpeedTest"
+    private val TAG = "SpeedTest-CustomTestHandler"
+    private var testFinished: Boolean = false
+    private var apiService: APIService? = null
 
-
-    fun runTestWithSingleServer(
-        count: Int,
-        currentIteration: Int = 1,
-        endpointURL: String
-    ) {
-
-        if (count != -1 && currentIteration > count) {
-            Log.i(TAG, "All Test completed")
-            return
-        }
-
-        Log.i(TAG, "Iteration $currentIteration")
+    fun runSpeedTestTask() {
         val config = Config.newConfig(configName)
+        if (apiService == null) {
+            apiService = APIService();
+        }
+        config?.tasks = arrayListOf(Task.newThroughputTask())
 
+        var backgroundThroughputTaskManager: TaskManager?
         val configHandler = object : ConfigHandlerBase() {
             override fun onConfigFetchFinished(validatedConfig: ValidatedConfig?) {
+                if (testFinished) {
+                    return
+                }
                 val handler = object : TestHandlerBase() {
+
+                    override fun onTestStarted(taskController: TaskManagerController?) {
+                        Log.i(TAG, "Start Testing...")
+                    }
+
                     override fun onLatencyFinished(
-                        taskController: TaskManagerController?,
-                        result: LatencyResult
+                        taskController: TaskManagerController?, result: LatencyResult
                     ) {
-                        super.onLatencyFinished(taskController, result)
-                        Log.d(TAG, "Latency Result: $result")
-                        taskManager?.startNextStage()
+                        Log.i(TAG, "Latency Result: $result")
+                    }
+
+                    override fun onUploadProgressUpdated(
+                        result: TransferResult, progressPercentage: Float
+                    ) {
+                        val speed = String.format("%.3f", result.speedMbps)
+                        Log.i(TAG, "Upload Progress: $speed Mbps")
+                    }
+
+                    override fun onResultUploadFinished(
+                        resultUpload: ResultUpload?, error: OoklaError?
+                    ) {
+                        if (error == null && resultUpload?.didSucceed == true) {
+                            Log.i(TAG, "Result Upload Success: ${resultUpload.httpStatusCode}")
+                        } else {
+                            Log.e(TAG, "Result Upload Failure: ${resultUpload?.httpStatusCode}")
+                            resultUpload?.response?.error?.forEach {
+                                Log.e(TAG, "Error: $it")
+                            }
+                        }
                     }
 
                     override fun onUploadFinished(
-                        taskController: TaskManagerController?,
-                        result: TransferResult
+                        taskController: TaskManagerController?, result: TransferResult
                     ) {
-                        super.onUploadFinished(taskController, result)
-                        Log.d(TAG, "Upload Speed: $result")
-                        taskManager?.startNextStage()
+                        val speed = String.format("%.3f", result.speedMbps)
+                        Log.i(TAG, "Upload Speed: $speed Mbps")
                     }
 
                     override fun onDownloadFinished(
-                        taskController: TaskManagerController?,
-                        result: TransferResult
+                        taskController: TaskManagerController?, result: TransferResult
                     ) {
-                        super.onDownloadFinished(taskController, result)
-                        Log.d(TAG, "Download Speed: $result")
-                        taskManager?.startNextStage()
+                        Log.i(TAG, "Download Speed: ${result.speedMbps} Mbps")
                     }
 
                     override fun onTestFinished(speedtestResult: SpeedtestResult) {
-                        super.onTestFinished(speedtestResult)
+                        val resultJson = speedtestResult.getResult().toJsonString()
                         val result = speedtestResult.getResult().toJsonString()
-                        sendUpdate(endpointURL, result, currentIteration)
-
-                        CoroutineScope(Dispatchers.Main).launch {
-                            delay(timeInterval.toLong() * 1000)
-                            runTestWithSingleServer(count, currentIteration + 1, endpointURL)
-                        }
+                        sendUpdate(endpointURL, result)
+                        Log.i(TAG, "Test Finished: $resultJson")
                     }
 
                     override fun onTestFailed(
-                        error: OoklaError,
-                        speedtestResult: SpeedtestResult?
+                        error: OoklaError, speedtestResult: SpeedtestResult?
                     ) {
-                        super.onTestFailed(error, speedtestResult)
-                        Log.e(TAG, error.message)
-                        sendError(error.message ?: "Unknown error")
+                        Log.e(TAG, "Test Failed: ${error.message}")
+                    }
 
-                        CoroutineScope(Dispatchers.Main).launch {
-                            delay(timeInterval.toLong() * 1000)
-                            runTestWithSingleServer(count, currentIteration + 1, endpointURL)
-                        }
+                    override fun onThroughputStageStarted(
+                        taskController: TaskManagerController?, stage: ThroughputStage
+                    ) {
+                        Log.i(TAG, "Throughput Stage Started: $stage")
+                    }
+
+                    override fun onThroughputStageFailed(
+                        error: OoklaError, stage: ThroughputStage, result: SpeedtestResult?
+                    ) {
+                        Log.e(TAG, "Throughput Stage Failed: $error")
+                    }
+
+                    override fun onThroughputStageFinished(
+                        taskController: TaskManagerController?, stage: ThroughputStage
+                    ) {
+                        Log.i(TAG, "Throughput Stage Finished")
+                    }
+
+                    override fun onThroughputTaskStarted(
+                        taskController: TaskManagerController?, remoteIp: String, localIp: String
+                    ) {
+                        Log.i(TAG, "Throughput Task Started")
+                    }
+
+                    override fun onThroughputTaskFinished(
+                        taskController: TaskManagerController?, result: ThroughputResult
+                    ) {
+                        Log.i(TAG, "Throughput Task Finished")
+                    }
+
+                    override fun onPacketlossFinished(
+                        taskController: TaskManagerController?, result: PacketlossResult
+                    ) {
+                        Log.i(
+                            TAG,
+                            "Packet Loss Finished - Sent: ${result.packetsSent}, Received: ${result.packetsReceived}"
+                        )
+                    }
+
+                    override fun onLatencyProgressUpdated(
+                        result: LatencyResult, progressPercentage: Float
+                    ) {
+                        val latency = String.format("%.3f", result.latencyMillis / 1000.0)
+                        Log.i(TAG, "Latency Progress Updated: $latency")
+                    }
+
+                    override fun onDownloadProgressUpdated(
+                        result: TransferResult, progressPercentage: Float
+                    ) {
+                        val speed = String.format("%.3f", result.speedMbps)
+                        Log.i(TAG, "Download Progress: $speed Mbps")
+                    }
+
+                    override fun onTracerouteStarted(
+                        taskController: TaskManagerController?, host: String, ip: String
+                    ) {
+                        Log.i(TAG, "Traceroute Started")
+                    }
+
+                    override fun onTracerouteHop(host: String, hop: TracerouteHop) {
+                        Log.i(TAG, "Traceroute Hop - Host: $host, Hop: $hop")
+                    }
+
+                    override fun onTracerouteFinished(
+                        taskController: TaskManagerController?, host: String, traceroute: Traceroute
+                    ) {
+                        Log.i(TAG, "Traceroute Finished")
+                    }
+
+                    override fun onTracerouteFailed(
+                        error: OoklaError, host: String, traceroute: Traceroute?
+                    ) {
+                        Log.e(TAG, "Traceroute Failed: ${error.message}")
+                    }
+
+                    override fun onTracerouteCanceled(host: String) {
+                        Log.i(TAG, "Traceroute Canceled")
+                    }
+
+                    override fun onDeviceStateCaptureFinished(result: BackgroundScanResult) {
+                        Log.i(
+                            TAG,
+                            "Device State Capture Finished: ${result.getResult().toJsonString()}"
+                        )
+                        taskManager?.startNextStage()
                     }
                 }
+                Log.i(
+                    TAG,
+                    "Config retrieved over connection type ${validatedConfig?.connectionType.toString()}"
+                )
 
-                taskManager = speedtestSDK.newTaskManager(handler, validatedConfig)
-                taskManager?.start()
+                val backgroundThroughputTaskManagerStatus =
+                    speedtestSDK.newTaskManagerWithAutoAdvance(handler, validatedConfig)
+                backgroundThroughputTaskManager = backgroundThroughputTaskManagerStatus.taskManager
+
+                if (backgroundThroughputTaskManagerStatus.didExist()) {
+                    Log.i(TAG, "Background task is already running.")
+
+                } else {
+                    backgroundThroughputTaskManager?.start()
+                    Log.i(TAG, "Started background task.")
+                }
             }
 
             override fun onConfigFetchFailed(error: OoklaError) {
-                Log.e(TAG, "Config fetch failed with: ${error.message}")
-                sendError("Config fetch failed: ${error.message}")
+                Log.e(TAG, "Config fetch failed with ${error.message}")
             }
         }
 
         ValidatedConfig.validate(config, MainThreadConfigHandler(configHandler))
     }
 
-    private fun sendUpdate(endpointURL: String, result: String, iteration: Int) {
-        val jsonObject = JSONObject()
-        jsonObject.put("iteration", iteration)
-        val jsonResult = JSONObject(result)
-        jsonObject.put("result", jsonResult)
-        val pluginResult = PluginResult(PluginResult.Status.OK, jsonObject)
+    private fun sendUpdate(endpointURL: String, result: String) {
+        val pluginResult = PluginResult(PluginResult.Status.OK, result)
         pluginResult.keepCallback = true
-        apiService.sendData(endpointURL, jsonObject.toString())
+        apiService?.sendData(endpointURL, result)
         callbackContext.sendPluginResult(pluginResult)
     }
 

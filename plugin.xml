@@ -49,11 +49,11 @@
         <source-file src="src/android/CustomTestHandler.kt" target-dir="src/main/kotlin/com/ncinga/speedtest" />
         <source-file src="src/android/APIService.kt" target-dir="src/main/kotlin/com/ncinga/speedtest"/>
         <source-file src="src/build-extras.gradle" target-dir="app/"/>
-        <source-file src="src/sdk" target-dir="app/libs"/>
+        <source-file src="src/android/sdk" target-dir="app/libs"/>
     </platform>
 
     <platform name="ios">
-        <source-file src="src/frameworks/SpeedtestSDK.xcframework" target-dir="lib" framework="true" />
+        <source-file src="src/ios/frameworks/SpeedtestSDK.xcframework" target-dir="lib" framework="true"/>
         <framework src="libc++.tbd" />
         <framework src="libz.tbd" />
         <config-file target="config.xml" parent="/*">
