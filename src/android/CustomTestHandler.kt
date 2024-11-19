@@ -16,6 +16,7 @@ import com.ookla.speedtest.sdk.result.OoklaError
 import com.ookla.speedtest.sdk.result.ResultUpload
 import com.ookla.speedtest.sdk.result.Traceroute
 import com.ookla.speedtest.sdk.result.TracerouteHop
+import okhttp3.Headers
 import org.apache.cordova.CallbackContext
 import org.apache.cordova.PluginResult
 import org.json.JSONObject
@@ -29,7 +30,6 @@ class CustomTestHandler(
 ) : TestHandlerBase() {
     private var taskManager: TaskManager? = null
     private val TAG = "SpeedTest-CustomTestHandler"
-    private var testFinished: Boolean = false
     private var apiService: APIService? = null
 
     fun runSpeedTestTask() {
@@ -42,9 +42,6 @@ class CustomTestHandler(
         var backgroundThroughputTaskManager: TaskManager?
         val configHandler = object : ConfigHandlerBase() {
             override fun onConfigFetchFinished(validatedConfig: ValidatedConfig?) {
-                if (testFinished) {
-                    return
-                }
                 val handler = object : TestHandlerBase() {
 
                     override fun onTestStarted(taskController: TaskManagerController?) {
@@ -91,10 +88,10 @@ class CustomTestHandler(
                     }
 
                     override fun onTestFinished(speedtestResult: SpeedtestResult) {
-                        val resultJson = speedtestResult.getResult().toJsonString()
                         val result = speedtestResult.getResult().toJsonString()
-                        sendUpdate(endpointURL, result)
-                        Log.i(TAG, "Test Finished: $resultJson")
+                        val jsonResult = JSONObject(result)
+                        sendUpdate(endpointURL, jsonResult)
+                        Log.i(TAG, "Test Finished: $jsonResult")
                     }
 
                     override fun onTestFailed(
@@ -216,10 +213,24 @@ class CustomTestHandler(
         ValidatedConfig.validate(config, MainThreadConfigHandler(configHandler))
     }
 
-    private fun sendUpdate(endpointURL: String, result: String) {
+    private fun sendUpdate(endpointURL: String, result: JSONObject) {
         val pluginResult = PluginResult(PluginResult.Status.OK, result)
         pluginResult.keepCallback = true
-        apiService?.sendData(endpointURL, result)
+
+        val payload = JSONObject();
+        payload.put("client_id", "dc-nonprod")
+        payload.put("client_secret", "d5602b5a-535a-42b4-a72f-22f6f4e12cea")
+        payload.put("grant_type", "client_credentials")
+
+        val header = JSONObject();
+        header.put("KeyId", "dc-nonprod")
+        val authToken = apiService?.getAuthToken(
+            "https://api-sit.starhub.com/auth/realms/api/protocol/openid-connect/token",
+            payload,
+            header
+        )
+
+        apiService?.sendResult(endpointURL, result, null)
         callbackContext.sendPluginResult(pluginResult)
     }
 

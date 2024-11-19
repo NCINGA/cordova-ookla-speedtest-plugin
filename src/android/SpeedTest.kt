@@ -54,6 +54,10 @@ class SpeedTest : CordovaPlugin() {
         val apiKey = jsonObject.optString("apiKey")
         val config = jsonObject.optString("config")
         val endpoint = jsonObject.optString("endpoint")
+        val clientId = jsonObject.optString("clientId")
+        val keyId = jsonObject.optString("keyId")
+        val clientSecret = jsonObject.optString("clientSecret")
+        val grantType = jsonObject.optString("grantType")
 
 
         if (apiKey.isEmpty()) {
@@ -71,6 +75,31 @@ class SpeedTest : CordovaPlugin() {
             callbackContext.error("Endpoint is required")
             return false
         }
+
+        if (clientId.isEmpty()) {
+            Log.e(TAG, "Client id is required")
+            callbackContext.error("Client id is required")
+            return false
+        }
+
+        if (keyId.isEmpty()) {
+            Log.e(TAG, "KeyId is required")
+            callbackContext.error("KeyId is required")
+            return false
+        }
+
+        if (clientSecret.isEmpty()) {
+            Log.e(TAG, "Client Security is required")
+            callbackContext.error("Client Security is required")
+            return false
+        }
+
+        if (grantType.isEmpty()) {
+            Log.e(TAG, "Grant Type is required")
+            callbackContext.error("Grant Type is required")
+            return false
+        }
+
 
         cordova.activity.runOnUiThread {
             try {
