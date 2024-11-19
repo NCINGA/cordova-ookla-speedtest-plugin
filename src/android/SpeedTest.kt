@@ -58,6 +58,7 @@ class SpeedTest : CordovaPlugin() {
         val keyId = jsonObject.optString("keyId")
         val clientSecret = jsonObject.optString("clientSecret")
         val grantType = jsonObject.optString("grantType")
+        val providerOrgCode = jsonObject.optString("providerOrgCode")
 
 
         if (apiKey.isEmpty()) {
@@ -100,15 +101,33 @@ class SpeedTest : CordovaPlugin() {
             return false
         }
 
+        if (providerOrgCode.isEmpty()) {
+            Log.e(TAG, "Provider Org Code is required")
+            callbackContext.error("Provider Org Code is required")
+            return false
+        }
+
 
         cordova.activity.runOnUiThread {
             try {
+
                 speedtestSDK = SpeedtestSDK.initSDK(cordova.activity.application, apiKey)
                 customTestHandler = CustomTestHandler(
-                    speedtestSDK!!, config, endpoint, callbackContext
+                    speedtestSDK!!, config, callbackContext
                 )
-                Log.i(TAG, "Config Name: $config, Endpoint URL: $endpoint")
-                customTestHandler?.runSpeedTestTask()
+                customTestHandler?.runSpeedTestTask(
+                    endpoint,
+                    clientId,
+                    keyId,
+                    clientSecret,
+                    grantType,
+                    providerOrgCode
+                )
+                Log.i(
+                    TAG,
+                    "Config Name: $config, Endpoint URL: $endpoint, Client Id $clientId, Key Id $keyId, Client Security, $clientSecret, Grant Type $grantType, Provider Org Code $providerOrgCode"
+                )
+
 
             } catch (e: Exception) {
                 Log.e(TAG, "Error initializing SpeedtestSDK: ${e.message}")

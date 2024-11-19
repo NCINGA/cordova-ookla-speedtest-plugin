@@ -16,7 +16,8 @@ import com.ookla.speedtest.sdk.result.OoklaError
 import com.ookla.speedtest.sdk.result.ResultUpload
 import com.ookla.speedtest.sdk.result.Traceroute
 import com.ookla.speedtest.sdk.result.TracerouteHop
-import okhttp3.Headers
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import org.apache.cordova.CallbackContext
 import org.apache.cordova.PluginResult
 import org.json.JSONObject
@@ -24,7 +25,6 @@ import org.json.JSONObject
 class CustomTestHandler(
     private val speedtestSDK: SpeedtestSDK,
     private val configName: String,
-    private var endpointURL: String,
     private val callbackContext: CallbackContext
 
 ) : TestHandlerBase() {
@@ -32,11 +32,16 @@ class CustomTestHandler(
     private val TAG = "SpeedTest-CustomTestHandler"
     private var apiService: APIService? = null
 
-    fun runSpeedTestTask() {
+
+    fun runSpeedTestTask(
+        endpoint: String,
+        clientId: String,
+        keyId: String,
+        clientSecret: String,
+        grantType: String,
+        providerOrgCode: String
+    ) {
         val config = Config.newConfig(configName)
-        if (apiService == null) {
-            apiService = APIService();
-        }
         config?.tasks = arrayListOf(Task.newThroughputTask())
 
         var backgroundThroughputTaskManager: TaskManager?
@@ -90,7 +95,15 @@ class CustomTestHandler(
                     override fun onTestFinished(speedtestResult: SpeedtestResult) {
                         val result = speedtestResult.getResult().toJsonString()
                         val jsonResult = JSONObject(result)
-                        sendUpdate(endpointURL, jsonResult)
+                        sendUpdate(
+                            endpoint,
+                            clientId,
+                            keyId,
+                            clientSecret,
+                            grantType,
+                            providerOrgCode,
+                            jsonResult
+                        )
                         Log.i(TAG, "Test Finished: $jsonResult")
                     }
 
@@ -213,24 +226,49 @@ class CustomTestHandler(
         ValidatedConfig.validate(config, MainThreadConfigHandler(configHandler))
     }
 
-    private fun sendUpdate(endpointURL: String, result: JSONObject) {
+    private fun sendUpdate(
+        endpoint: String,
+        clientId: String,
+        keyId: String,
+        clientSecret: String,
+        grantType: String,
+        providerOrgCode: String, result: JSONObject
+    ) {
         val pluginResult = PluginResult(PluginResult.Status.OK, result)
         pluginResult.keepCallback = true
 
+        if (apiService == null) {
+            apiService = APIService();
+        }
+
         val payload = JSONObject();
-        payload.put("client_id", "dc-nonprod")
-        payload.put("client_secret", "d5602b5a-535a-42b4-a72f-22f6f4e12cea")
-        payload.put("grant_type", "client_credentials")
+        payload.put("client_id", clientId)
+        payload.put("client_secret", clientSecret)
+        payload.put("grant_type", grantType)
 
         val header = JSONObject();
-        header.put("KeyId", "dc-nonprod")
-        val authToken = apiService?.getAuthToken(
-            "https://api-sit.starhub.com/auth/realms/api/protocol/openid-connect/token",
+        header.put("KeyId", keyId)
+        apiService?.getAuthToken(
+            endpoint,
             payload,
             header
-        )
+        ) { token ->
+            val headers = JSONObject();
+            headers.put("providerOrgCode", providerOrgCode)
+            headers.put(
+                "transactionId",
+                "TransactionId: API-REST-18112024-cd11b5ba-5b54-449e-b111-28fa1f1fdf65"
+            )
+            headers.put("timestamp", generateTimestamp())
+            headers.put("keyId", keyId)
+            headers.put("token", "Bearer ${token}")
+            apiService?.sendResult(endpoint, result, headers)
 
-        apiService?.sendResult(endpointURL, result, null)
+        }
+
+
+
+
         callbackContext.sendPluginResult(pluginResult)
     }
 
@@ -238,6 +276,12 @@ class CustomTestHandler(
         val pluginResult = PluginResult(PluginResult.Status.ERROR, message)
         pluginResult.keepCallback = false
         callbackContext.sendPluginResult(pluginResult)
+    }
+
+    fun generateTimestamp(): String {
+        val currentDateTime = ZonedDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
+        return currentDateTime.format(formatter)
     }
 
     fun stopTesting() {
