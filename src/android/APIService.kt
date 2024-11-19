@@ -29,20 +29,37 @@ class APIService() : APIServiceInterface {
             return
         }
 
-        val requestBody =
-            payload.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        val requestBody = payload.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
         val token = headers?.optString("token", "")
         val providerOrgCode = headers?.optString("providerOrgCode", "")
         val transactionId = headers?.optString("transactionId", "")
         val keyId = headers?.optString("keyId", "")
         val timestamp = headers?.optString("timestamp", "")
-        val request = Request.Builder().url(url).post(requestBody)
-            .addHeader("Token", token!!)
-            .addHeader("ProviderOrgCode", providerOrgCode!!)
-            .addHeader("KeyId", keyId!!)
-            .addHeader("Timestamp", timestamp!!)
-            .addHeader("TransactionId", transactionId!!)
-            .addHeader("Content-Type", "application/json").build()
+
+        if (token.isNullOrEmpty() || providerOrgCode.isNullOrEmpty() || transactionId.isNullOrEmpty() ||
+            keyId.isNullOrEmpty() || timestamp.isNullOrEmpty()) {
+            Log.e(TAG, "Missing required headers.")
+            return
+        }
+
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .addHeader("Authorization", "Bearer $token")
+            .addHeader("Token", token)
+            .addHeader("ProviderOrgCode", providerOrgCode)
+            .addHeader("KeyId", keyId)
+            .addHeader("Timestamp", timestamp)
+            .addHeader("TransactionId", transactionId)
+            .addHeader("Content-Type", "application/json")
+            // Add Cookie header from the curl command (if required)
+            .addHeader("Cookie", "incap_ses_1789_2785807=yAUxU+YKmXBf9qDjMc7TGOQMPWcAAAAAfaLwa7+4dl/Kp488qrk9Yw==; incap_ses_184_2785807=DMjtZ3wjJFVho98rILONAq0JPWcAAAAA7NEANAoESoJYTWnrgkFUnQ==; nlbi_2785807=Nd5TYdo2byaIReeYqO1TFQAAAADcrdxQNPx/ooPM3l2qbg8V; visid_incap_2785807=RzFKHWkAQQCpF32R5rUhsHYDPWcAAAAAQUIPAAAAAAAdCCgikVax7gXOR87Wz69y")
+            .build()
+
+        Log.i(TAG, "Request headers: ${request.headers}")
+        Log.i(TAG, "Request body: $payload")
+
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -57,15 +74,13 @@ class APIService() : APIServiceInterface {
                         Log.i(TAG, "Response: $responseString")
                     }
                 } else {
-                    Log.e(
-                        TAG,
-                        "Failed to send data or server error. Status code: ${response.code}"
-                    )
+                    Log.e(TAG, "Failed to send data or server error. Status code: ${response.code}")
                 }
                 response.close()
             }
         })
     }
+
 
 
     override fun getAuthToken(
@@ -82,7 +97,7 @@ class APIService() : APIServiceInterface {
 
             val formBodyBuilder = FormBody.Builder()
             payload.keys().forEach { key ->
-                payload.optString(key)?.let { formBodyBuilder.add(key, it) }
+                payload.optString(key).let { formBodyBuilder.add(key, it) }
             }
             val requestBody = formBodyBuilder.build()
 

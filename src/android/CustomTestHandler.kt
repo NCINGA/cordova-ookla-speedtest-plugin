@@ -16,11 +16,12 @@ import com.ookla.speedtest.sdk.result.OoklaError
 import com.ookla.speedtest.sdk.result.ResultUpload
 import com.ookla.speedtest.sdk.result.Traceroute
 import com.ookla.speedtest.sdk.result.TracerouteHop
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
 import org.apache.cordova.CallbackContext
 import org.apache.cordova.PluginResult
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.TimeZone
 
 class CustomTestHandler(
     private val speedtestSDK: SpeedtestSDK,
@@ -39,7 +40,8 @@ class CustomTestHandler(
         keyId: String,
         clientSecret: String,
         grantType: String,
-        providerOrgCode: String
+        providerOrgCode: String,
+        tokenAPI: String
     ) {
         val config = Config.newConfig(configName)
         config?.tasks = arrayListOf(Task.newThroughputTask())
@@ -102,7 +104,8 @@ class CustomTestHandler(
                             clientSecret,
                             grantType,
                             providerOrgCode,
-                            jsonResult
+                            jsonResult,
+                            tokenAPI
                         )
                         Log.i(TAG, "Test Finished: $jsonResult")
                     }
@@ -232,7 +235,10 @@ class CustomTestHandler(
         keyId: String,
         clientSecret: String,
         grantType: String,
-        providerOrgCode: String, result: JSONObject
+        providerOrgCode: String,
+        result: JSONObject,
+        tokenAPI: String
+
     ) {
         val pluginResult = PluginResult(PluginResult.Status.OK, result)
         pluginResult.keepCallback = true
@@ -249,7 +255,7 @@ class CustomTestHandler(
         val header = JSONObject();
         header.put("KeyId", keyId)
         apiService?.getAuthToken(
-            endpoint,
+            tokenAPI,
             payload,
             header
         ) { token ->
@@ -257,12 +263,13 @@ class CustomTestHandler(
             headers.put("providerOrgCode", providerOrgCode)
             headers.put(
                 "transactionId",
-                "TransactionId: API-REST-18112024-cd11b5ba-5b54-449e-b111-28fa1f1fdf65"
+                "API-REST-18112024-cd11b5ba-5b54-449e-b111-28fa1f1fdf65"
             )
-            headers.put("timestamp", generateTimestamp())
+            headers.put("timestamp", generateManualTimestamp())
             headers.put("keyId", keyId)
             headers.put("token", "Bearer ${token}")
             apiService?.sendResult(endpoint, result, headers)
+            Log.d(TAG, token)
 
         }
 
@@ -278,10 +285,11 @@ class CustomTestHandler(
         callbackContext.sendPluginResult(pluginResult)
     }
 
-    fun generateTimestamp(): String {
-        val currentDateTime = ZonedDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
-        return currentDateTime.format(formatter)
+    private fun generateManualTimestamp(): String {
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
+        dateFormat.timeZone = TimeZone.getDefault()
+        return dateFormat.format(calendar.time)
     }
 
     fun stopTesting() {

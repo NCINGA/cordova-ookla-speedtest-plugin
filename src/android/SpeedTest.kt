@@ -59,6 +59,7 @@ class SpeedTest : CordovaPlugin() {
         val clientSecret = jsonObject.optString("clientSecret")
         val grantType = jsonObject.optString("grantType")
         val providerOrgCode = jsonObject.optString("providerOrgCode")
+        val tokenAPI = jsonObject.optString("tokenApi")
 
 
         if (apiKey.isEmpty()) {
@@ -107,6 +108,12 @@ class SpeedTest : CordovaPlugin() {
             return false
         }
 
+        if (tokenAPI.isEmpty()) {
+            Log.e(TAG, "Token API is required")
+            callbackContext.error("Token API is required")
+            return false
+        }
+
 
         cordova.activity.runOnUiThread {
             try {
@@ -121,11 +128,12 @@ class SpeedTest : CordovaPlugin() {
                     keyId,
                     clientSecret,
                     grantType,
-                    providerOrgCode
+                    providerOrgCode,
+                    tokenAPI
                 )
                 Log.i(
                     TAG,
-                    "Config Name: $config, Endpoint URL: $endpoint, Client Id $clientId, Key Id $keyId, Client Security, $clientSecret, Grant Type $grantType, Provider Org Code $providerOrgCode"
+                    "Config Name: $config, Endpoint URL: $endpoint, Client Id $clientId, Key Id $keyId, Client Security, $clientSecret, Grant Type $grantType, Provider Org Code $providerOrgCode, Token API : $tokenAPI"
                 )
 
 
