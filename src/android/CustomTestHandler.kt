@@ -22,6 +22,7 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.TimeZone
+import java.util.UUID
 
 class CustomTestHandler(
     private val speedtestSDK: SpeedtestSDK,
@@ -29,7 +30,7 @@ class CustomTestHandler(
     private val callbackContext: CallbackContext
 
 ) : TestHandlerBase() {
-    private var taskManager: TaskManager? = null
+    private var backgroundThroughputTaskManager: TaskManager? = null
     private val TAG = "SpeedTest-CustomTestHandler"
     private var apiService: APIService? = null
 
@@ -46,7 +47,6 @@ class CustomTestHandler(
         val config = Config.newConfig(configName)
         config?.tasks = arrayListOf(Task.newThroughputTask())
 
-        var backgroundThroughputTaskManager: TaskManager?
         val configHandler = object : ConfigHandlerBase() {
             override fun onConfigFetchFinished(validatedConfig: ValidatedConfig?) {
                 val handler = object : TestHandlerBase() {
@@ -200,7 +200,6 @@ class CustomTestHandler(
                             TAG,
                             "Device State Capture Finished: ${result.getResult().toJsonString()}"
                         )
-                        taskManager?.startNextStage()
                     }
                 }
                 Log.i(
@@ -253,6 +252,7 @@ class CustomTestHandler(
         payload.put("grant_type", grantType)
 
         val header = JSONObject();
+        val uuid: UUID = UUID.randomUUID()
         header.put("KeyId", keyId)
         apiService?.getAuthToken(
             tokenAPI,
@@ -263,27 +263,16 @@ class CustomTestHandler(
             headers.put("providerOrgCode", providerOrgCode)
             headers.put(
                 "transactionId",
-                "API-REST-18112024-cd11b5ba-5b54-449e-b111-28fa1f1fdf65"
+                "API-REST-${uuid}"
             )
             headers.put("timestamp", generateManualTimestamp())
             headers.put("keyId", keyId)
             headers.put("token", "Bearer ${token}")
             apiService?.sendResult(endpoint, result, headers)
-            Log.d(TAG, token)
-
-        }
-
-
-
-
+         }
         callbackContext.sendPluginResult(pluginResult)
     }
 
-    private fun sendError(message: String) {
-        val pluginResult = PluginResult(PluginResult.Status.ERROR, message)
-        pluginResult.keepCallback = false
-        callbackContext.sendPluginResult(pluginResult)
-    }
 
     private fun generateManualTimestamp(): String {
         val calendar = Calendar.getInstance()
@@ -295,7 +284,7 @@ class CustomTestHandler(
     fun stopTesting() {
         val result = JSONObject();
         result.put("message", "stop testing")
-        taskManager?.cancel()
+        backgroundThroughputTaskManager?.cancel()
         val pluginResult = PluginResult(PluginResult.Status.OK, result)
         pluginResult.keepCallback = true
         callbackContext.sendPluginResult(pluginResult)

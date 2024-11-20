@@ -122,6 +122,7 @@ class APIService() : APIServiceInterface {
                     if (response.isSuccessful) {
                         val responseBody = response.body?.string() ?: "Empty response body."
                         val jsonResponse = JSONObject(responseBody)
+                        Log.d(TAG, "Received token $jsonResponse")
                         callback(jsonResponse.optString("access_token", "Token not found."))
                     } else {
                         callback("Error: ${response.code} - ${response.message}")
