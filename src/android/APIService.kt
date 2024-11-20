@@ -28,8 +28,9 @@ class APIService() : APIServiceInterface {
             Log.e(TAG, "Invalid URL.")
             return
         }
+        val requestBody =
+            payload.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
-        val requestBody = payload.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
         val token = headers?.optString("token", "")
         val providerOrgCode = headers?.optString("providerOrgCode", "")
@@ -38,7 +39,8 @@ class APIService() : APIServiceInterface {
         val timestamp = headers?.optString("timestamp", "")
 
         if (token.isNullOrEmpty() || providerOrgCode.isNullOrEmpty() || transactionId.isNullOrEmpty() ||
-            keyId.isNullOrEmpty() || timestamp.isNullOrEmpty()) {
+            keyId.isNullOrEmpty() || timestamp.isNullOrEmpty()
+        ) {
             Log.e(TAG, "Missing required headers.")
             return
         }
@@ -46,15 +48,13 @@ class APIService() : APIServiceInterface {
         val request = Request.Builder()
             .url(url)
             .post(requestBody)
-            .addHeader("Authorization", "Bearer $token")
-            .addHeader("Token", token)
-            .addHeader("ProviderOrgCode", providerOrgCode)
+            .addHeader("Authorization", "Bearer")
             .addHeader("KeyId", keyId)
-            .addHeader("Timestamp", timestamp)
+            .addHeader("ProviderOrgCode", providerOrgCode)
             .addHeader("TransactionId", transactionId)
+            .addHeader("Timestamp", timestamp)
+            .addHeader("Token", token)
             .addHeader("Content-Type", "application/json")
-            // Add Cookie header from the curl command (if required)
-            .addHeader("Cookie", "incap_ses_1789_2785807=yAUxU+YKmXBf9qDjMc7TGOQMPWcAAAAAfaLwa7+4dl/Kp488qrk9Yw==; incap_ses_184_2785807=DMjtZ3wjJFVho98rILONAq0JPWcAAAAA7NEANAoESoJYTWnrgkFUnQ==; nlbi_2785807=Nd5TYdo2byaIReeYqO1TFQAAAADcrdxQNPx/ooPM3l2qbg8V; visid_incap_2785807=RzFKHWkAQQCpF32R5rUhsHYDPWcAAAAAQUIPAAAAAAAdCCgikVax7gXOR87Wz69y")
             .build()
 
         Log.i(TAG, "Request headers: ${request.headers}")
@@ -74,13 +74,15 @@ class APIService() : APIServiceInterface {
                         Log.i(TAG, "Response: $responseString")
                     }
                 } else {
-                    Log.e(TAG, "Failed to send data or server error. Status code: ${response.code}")
+                    Log.e(
+                        TAG,
+                        "Failed to send data or server error. Status code: ${response}"
+                    )
                 }
                 response.close()
             }
         })
     }
-
 
 
     override fun getAuthToken(
