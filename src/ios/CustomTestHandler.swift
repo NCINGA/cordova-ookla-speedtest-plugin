@@ -21,20 +21,30 @@ public class CustomTestHandler {
     }
 
     func runTestWithSingleServer(endpoint: String, clientId: String, keyId: String, clientSecret: String, grantType: String, providerOrgCode: String, tokenAPI: String) {
-        guard count > 0 else {
+        guard count > 0 || count == -1 else {
             os_log("Invalid count. Cannot run test.")
             return
         }
-        runTestIteration(currentIteration: 1, endpoint: endpoint, clientId: clientId, keyId: keyId, clientSecret: clientSecret, grantType: grantType, providerOrgCode: providerOrgCode, tokenAPI: tokenAPI)
+        runTestIteration(
+            currentIteration: 1,
+            endpoint: endpoint,
+            clientId: clientId,
+            keyId: keyId,
+            clientSecret: clientSecret,
+            grantType: grantType,
+            providerOrgCode: providerOrgCode,
+            tokenAPI: tokenAPI
+        )
     }
 
+
     private func runTestIteration(currentIteration: Int, endpoint: String, clientId: String, keyId: String, clientSecret: String, grantType: String, providerOrgCode: String, tokenAPI: String) {
-        guard currentIteration <= count else {
+        if count != -1 && currentIteration > count {
             finalizeResults()
             return
         }
 
-        os_log("Running test iteration %d of %d", currentIteration, count)
+        os_log("Running test iteration %d of %d", currentIteration, count == -1 ? "∞" : "\(count)")
 
         let config = STConfig.newConfig(configName ?? "SpeedTest")
         config?.validate { [weak self] validatedConfig, error in
@@ -54,7 +64,7 @@ public class CustomTestHandler {
                 tokenAPI: tokenAPI,
                 customTestHandler: self,
                 completionHandler: {
-                    let delay = Double(self.timeInterval ?? 10)
+                    let delay = Double(self.timeInterval ?? 10000) / 1000.0
                     DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                         self.runTestIteration(
                             currentIteration: currentIteration + 1,
@@ -69,6 +79,7 @@ public class CustomTestHandler {
                     }
                 }
             )
+
 
             do {
                 self.taskManager = try self.speedTestsdk?.newTaskManager(STMainThreadTestHandler(delegate: handler), config: validatedConfig)
