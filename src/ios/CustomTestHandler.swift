@@ -1,38 +1,34 @@
 import Foundation
 import SpeedtestSDK
-import CoreLocation
 import os
 
 public class CustomTestHandler {
-    private var testResult: [ResultDTO] = []
     private var speedTestsdk: STSpeedtestSDK?
     private var configName: String?
     private var taskManager: STTaskManager?
     private var callback: (([String: Any]) -> Void)?
     private var count: Int32
-    private var endpointHandler: EndpointHandler?
     private var timeInterval: Int32?
+    private var apiService: APIService?
 
-    init(speedTestsdk: STSpeedtestSDK?, configName: String?, count: Int32 = 1,
-         endpoint: String?, timeInterval: Int32?, callback: (([String: Any]) -> Void)?) {
+    init(speedTestsdk: STSpeedtestSDK?, configName: String?, count: Int32 = 1, timeInterval: Int32?, callback: (([String: Any]) -> Void)?) {
         self.speedTestsdk = speedTestsdk
         self.configName = configName
         self.count = count
         self.callback = callback
         self.timeInterval = timeInterval
-        self.endpointHandler = EndpointHandler(endpoint: endpoint ?? "")
+        self.apiService = APIService()
     }
 
-    func runTestWithSingleServer() {
+    func runTestWithSingleServer(endpoint: String, clientId: String, keyId: String, clientSecret: String, grantType: String, providerOrgCode: String, tokenAPI: String) {
         guard count > 0 else {
             os_log("Invalid count. Cannot run test.")
             return
         }
-
-        runTestIteration(currentIteration: 1)
+        runTestIteration(currentIteration: 1, endpoint: endpoint, clientId: clientId, keyId: keyId, clientSecret: clientSecret, grantType: grantType, providerOrgCode: providerOrgCode, tokenAPI: tokenAPI)
     }
 
-    private func runTestIteration(currentIteration: Int) {
+    private func runTestIteration(currentIteration: Int, endpoint: String, clientId: String, keyId: String, clientSecret: String, grantType: String, providerOrgCode: String, tokenAPI: String) {
         guard currentIteration <= count else {
             finalizeResults()
             return
@@ -47,12 +43,32 @@ public class CustomTestHandler {
                 return
             }
 
-            let handler = TestHandler(currentIteration: currentIteration, testResult: &self.testResult) {
-                let delay = Double(self.timeInterval ?? 10)
-                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                    self.runTestIteration(currentIteration: currentIteration + 1)
+            let handler = TestHandler(
+                currentIteration: currentIteration,
+                endpoint: endpoint,
+                clientId: clientId,
+                keyId: keyId,
+                clientSecret: clientSecret,
+                grantType: grantType,
+                providerOrgCode: providerOrgCode,
+                tokenAPI: tokenAPI,
+                customTestHandler: self,
+                completionHandler: {
+                    let delay = Double(self.timeInterval ?? 10)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                        self.runTestIteration(
+                            currentIteration: currentIteration + 1,
+                            endpoint: endpoint,
+                            clientId: clientId,
+                            keyId: keyId,
+                            clientSecret: clientSecret,
+                            grantType: grantType,
+                            providerOrgCode: providerOrgCode,
+                            tokenAPI: tokenAPI
+                        )
+                    }
                 }
-            }
+            )
 
             do {
                 self.taskManager = try self.speedTestsdk?.newTaskManager(STMainThreadTestHandler(delegate: handler), config: validatedConfig)
@@ -66,28 +82,34 @@ public class CustomTestHandler {
 
     private func finalizeResults() {
         os_log("All tests completed.")
-        do {
-            guard let testResults = testResult as? [ResultDTO] else {
-                os_log("testResult is not of type [ResultDTO].")
-                return
-            }
-            let resultArray = convertTestResultsToJsonArray(testResults: testResults)
-            self.endpointHandler?.sendData(body: convertTestResultsToJson(testResults: testResults))
-            callback?(resultArray)
-        } catch {
-            os_log("Error processing result: \(error.localizedDescription)")
-        }
+        let message: [String: Any] = ["status": "All tests completed."]
+        callback?(message)
     }
 
-    class TestHandler: NSObject, STTestHandlerDelegate, ObservableObject {
+
+    class TestHandler: NSObject, STTestHandlerDelegate {
         weak var taskManager: STTaskManager?
         private var currentIteration: Int
+        private var endpoint: String
+        private var clientId: String
+        private var keyId: String
+        private var clientSecret: String
+        private var grantType: String
+        private var providerOrgCode: String
+        private var tokenAPI: String
+        private var customTestHandler: CustomTestHandler
         private var completionHandler: () -> Void
-        private var testResult: UnsafeMutablePointer<[ResultDTO]>
 
-        init(currentIteration: Int, testResult: inout [ResultDTO], completionHandler: @escaping () -> Void) {
+        init(currentIteration: Int, endpoint: String, clientId: String, keyId: String, clientSecret: String, grantType: String, providerOrgCode: String, tokenAPI: String, customTestHandler: CustomTestHandler, completionHandler: @escaping () -> Void) {
             self.currentIteration = currentIteration
-            self.testResult = UnsafeMutablePointer(&testResult)
+            self.endpoint = endpoint
+            self.clientId = clientId
+            self.keyId = keyId
+            self.clientSecret = clientSecret
+            self.grantType = grantType
+            self.providerOrgCode = providerOrgCode
+            self.tokenAPI = tokenAPI
+            self.customTestHandler = customTestHandler
             self.completionHandler = completionHandler
         }
 
@@ -111,8 +133,21 @@ public class CustomTestHandler {
             do {
                 let jsonData = try JSONEncoder().encode(result.getResult())
                 if let jsonString = String(data: jsonData, encoding: .utf8) {
-                    let loopResult = ResultDTO(id: "loop\(currentIteration)", result: jsonString)
-                    testResult.pointee.append(loopResult)
+                    os_log("Result for loop %d: %@", currentIteration, jsonString)
+
+                    customTestHandler.sendUpdate(
+                        endpoint: endpoint,
+                        clientId: clientId,
+                        keyId: keyId,
+                        clientSecret: clientSecret,
+                        grantType: grantType,
+                        providerOrgCode: providerOrgCode,
+                        result: jsonString,
+                        tokenAPI: tokenAPI,
+                        callback: { pluginResult in
+                            os_log("Plugin result received: %@", "\(pluginResult)")
+                        }
+                    )
                 } else {
                     os_log("Error converting JSON data to string.")
                 }
@@ -122,5 +157,59 @@ public class CustomTestHandler {
             taskManager?.startNextStage()
             completionHandler()
         }
+    }
+
+    private func sendUpdate(
+        endpoint: String,
+        clientId: String,
+        keyId: String,
+        clientSecret: String,
+        grantType: String,
+        providerOrgCode: String,
+        result: String,
+        tokenAPI: String,
+        callback: @escaping ([String: Any]) -> Void
+    ) {
+        let pluginResult: [String: Any] = ["status": "OK", "result": result]
+
+        if apiService == nil {
+            apiService = APIService()
+        }
+
+        let payload: [String: String] = [
+            "client_id": clientId,
+            "client_secret": clientSecret,
+            "grant_type": grantType
+        ]
+
+        let uuid = UUID().uuidString
+        let header: [String: String] = [
+            "keyId": keyId
+        ]
+
+        apiService?.getAuthToken(url: tokenAPI, payload: payload, headers: header) { token in
+            guard let token = token else {
+                os_log("Failed to fetch token.")
+                return
+            }
+
+            let headers: [String: String] = [
+                "providerOrgCode": providerOrgCode,
+                "transactionId": "API-REST-\(uuid)",
+                "timestamp": self.generateManualTimestamp(),
+                "keyId": keyId,
+                "token": "Bearer \(token)"
+            ]
+
+            self.apiService?.sendResult(url: endpoint, payload: result, headers: headers)
+
+            callback(pluginResult)
+        }
+    }
+    private func generateManualTimestamp() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssXXX"
+        formatter.timeZone = TimeZone.current
+        return formatter.string(from: Date())
     }
 }
