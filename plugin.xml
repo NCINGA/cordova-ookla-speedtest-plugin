@@ -18,7 +18,6 @@
 
     <platform name="android">
         <resource-file src="src/android/res/xml/network_security_config.xml" target="res/xml/network_security_config.xml" />
-
         <edit-config file="AndroidManifest.xml" target="/manifest/application" mode="merge">
             <application android:networkSecurityConfig="@xml/network_security_config" />
         </edit-config>
