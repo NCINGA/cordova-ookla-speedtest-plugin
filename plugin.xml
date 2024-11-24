@@ -7,7 +7,7 @@
     <description>Ookla Speed Test Plugin</description>
 
     <js-module name="SpeedTest" src="www/SpeedTest.js">
-        <clobbers target="kotlin" />
+        <clobbers target="window.plugins.SpeedTest" />
     </js-module>
 
     <engines>
@@ -18,6 +18,7 @@
 
     <platform name="android">
         <resource-file src="src/android/res/xml/network_security_config.xml" target="res/xml/network_security_config.xml" />
+
         <edit-config file="AndroidManifest.xml" target="/manifest/application" mode="merge">
             <application android:networkSecurityConfig="@xml/network_security_config" />
         </edit-config>
@@ -55,6 +56,7 @@
         <source-file src="src/build-extras.gradle" target-dir="app/"/>
         <source-file src="src/android/sdk" target-dir="app/libs"/>
     </platform>
+
     <platform name="ios">
         <hook type="before_plugin_install" src="scripts/fix_swift_version.js" />
         <hook type="before_prepare" src="scripts/set_deployment_target.js" />
@@ -77,6 +79,6 @@
         </config-file>
         <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
             <string>Access Location Service</string>
-        </config-file>
-    </platform>
+         </config-file>
+     </platform>
 </plugin>
