@@ -54,6 +54,7 @@
     <platform name="ios">
         <hook type="before_plugin_install" src="scripts/fix_swift_version.js" />
         <hook type="before_prepare" src="scripts/set_deployment_target.js" />
+        <hook type="before_build" src="scripts/copy_bridging_header.js" />
         <source-file src="src/ios/frameworks/SpeedtestSDK.xcframework" target-dir="lib" framework="true"/>
         <framework src="libc++.tbd" />
         <framework src="libz.tbd" />
