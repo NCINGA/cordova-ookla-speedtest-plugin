@@ -33,7 +33,7 @@ class APIService() : APIServiceInterface {
         Log.i(TAG, "Encrypted Data (Base64): $encryptedBase64")
 
         val requestBody =
-            encryptedBase64.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+            payload.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
 
         val token = headers?.optString("token", "")
