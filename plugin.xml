@@ -59,28 +59,28 @@
         <source-file src="src/android/sdk" target-dir="app/libs"/>
     </platform>
 
-    <platform name="ios">
-        <hook type="before_plugin_install" src="scripts/fix_swift_version.js" />
-        <hook type="before_prepare" src="scripts/set_deployment_target.js" />
-        <source-file src="src/ios/frameworks/SpeedtestSDK.xcframework" target-dir="lib" framework="true"/>
-        <framework src="libc++.tbd" />
-        <framework src="libz.tbd" />
-        <config-file target="config.xml" parent="/*">
-            <feature name="SpeedTest">
-                <param name="ios-package" value="SpeedTest" />
-            </feature>
-        </config-file>
-        <source-file src="src/ios/SpeedTest.swift"/>
-        <source-file src="src/ios/CustomTestHandler.swift"/>
-        <source-file src="src/ios/APIService.swift"/>
-        <config-file target="*-Info.plist" parent="NSAppTransportSecurity">
-            <dict>
-                <key>NSAllowsArbitraryLoads</key>
-                <true/>
-            </dict>
-        </config-file>
-        <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
-            <string>Access Location Service</string>
-         </config-file>
-     </platform>
+<!--    <platform name="ios">-->
+<!--        <hook type="before_plugin_install" src="scripts/fix_swift_version.js" />-->
+<!--        <hook type="before_prepare" src="scripts/set_deployment_target.js" />-->
+<!--        <source-file src="src/ios/frameworks/SpeedtestSDK.xcframework" target-dir="lib" framework="true"/>-->
+<!--        <framework src="libc++.tbd" />-->
+<!--        <framework src="libz.tbd" />-->
+<!--        <config-file target="config.xml" parent="/*">-->
+<!--            <feature name="SpeedTest">-->
+<!--                <param name="ios-package" value="SpeedTest" />-->
+<!--            </feature>-->
+<!--        </config-file>-->
+<!--        <source-file src="src/ios/SpeedTest.swift"/>-->
+<!--        <source-file src="src/ios/CustomTestHandler.swift"/>-->
+<!--        <source-file src="src/ios/APIService.swift"/>-->
+<!--        <config-file target="*-Info.plist" parent="NSAppTransportSecurity">-->
+<!--            <dict>-->
+<!--                <key>NSAllowsArbitraryLoads</key>-->
+<!--                <true/>-->
+<!--            </dict>-->
+<!--        </config-file>-->
+<!--        <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">-->
+<!--            <string>Access Location Service</string>-->
+<!--         </config-file>-->
+<!--     </platform>-->
 </plugin>
