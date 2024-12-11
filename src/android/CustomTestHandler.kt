@@ -252,7 +252,6 @@ class CustomTestHandler(
         payload.put("grant_type", grantType)
 
         val header = JSONObject();
-        val uuid: UUID = UUID.randomUUID()
         header.put("KeyId", keyId)
         apiService?.getAuthToken(
             tokenAPI,
@@ -261,15 +260,17 @@ class CustomTestHandler(
         ) { token ->
             val headers = JSONObject();
             headers.put("providerOrgCode", providerOrgCode)
+            val uuid = generateCustomString()
+            val timestamp =  generateManualTimestamp()
             headers.put(
                 "transactionId",
                 "API-REST-${uuid}"
             )
-            headers.put("timestamp", generateManualTimestamp())
+            headers.put("timestamp",timestamp)
             headers.put("keyId", keyId)
-            headers.put("token", "Bearer ${token}")
+            headers.put("token", token)
             apiService?.sendResult(endpoint, result, headers)
-         }
+        }
         callbackContext.sendPluginResult(pluginResult)
     }
 
@@ -288,5 +289,16 @@ class CustomTestHandler(
         val pluginResult = PluginResult(PluginResult.Status.OK, result)
         pluginResult.keepCallback = true
         callbackContext.sendPluginResult(pluginResult)
+    }
+
+    fun generateCustomString(): String {
+        val date = "09122024"
+        val uuid = UUID.randomUUID().toString().replace("-", "")
+        val part1 = uuid.substring(0, 8)
+        val part2 = uuid.substring(8, 12)
+        val part3 = uuid.substring(12, 16)
+        val part4 = uuid.substring(16, 20)
+        val part5 = uuid.substring(20, 32)
+        return "$date-$part1-$part2-$part3-$part4-$part5"
     }
 }

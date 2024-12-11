@@ -28,8 +28,12 @@ class APIService() : APIServiceInterface {
             Log.e(TAG, "Invalid URL.")
             return
         }
+
+        val encryptedBase64 = AESGCMUtil.encrypt(payload.toString())
+        Log.i(TAG, "Encrypted Data (Base64): $encryptedBase64")
+
         val requestBody =
-            payload.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+            encryptedBase64.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
 
         val token = headers?.optString("token", "")
@@ -45,15 +49,22 @@ class APIService() : APIServiceInterface {
             return
         }
 
+        if (providerOrgCode.isNullOrEmpty() || transactionId.isNullOrEmpty() ||
+            keyId.isNullOrEmpty() || timestamp.isNullOrEmpty()
+        ) {
+            Log.e(TAG, "Missing required headers.")
+            return
+        }
+
         val request = Request.Builder()
             .url(url)
             .post(requestBody)
-            .addHeader("Authorization", "Bearer")
+            .addHeader("Authorization", "Bearer ${token}")
             .addHeader("KeyId", keyId)
             .addHeader("ProviderOrgCode", providerOrgCode)
             .addHeader("TransactionId", transactionId)
             .addHeader("Timestamp", timestamp)
-            .addHeader("Token", token)
+            .addHeader("Token", "Bearer ${token}")
             .addHeader("Content-Type", "application/json")
             .build()
 
@@ -71,7 +82,7 @@ class APIService() : APIServiceInterface {
                     Log.i(TAG, "Data sent successfully.")
                     response.body?.let {
                         val responseString = it.string()
-                        Log.i(TAG, "Response: $responseString")
+                        Log.i(TAG, "Response: ${responseString}")
                     }
                 } else {
                     Log.e(
